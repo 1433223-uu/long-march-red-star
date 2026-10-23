@@ -148,8 +148,8 @@
             background: #1f2b1d;
             padding: 6px 22px;
             border-radius: 40px;
-            font-size: 1.4rem;
-            letter-spacing: 2px;
+            font-size: 1.3rem;
+            letter-spacing: 1px;
             box-shadow: inset 0 -3px 0 #0b100a, 0 4px 0 #0a0f08;
             color: #fadf9e;
             display: flex;
@@ -160,8 +160,8 @@
 
         .score-box span, .timer-box span, .hp-box span {
             color: #ffd966;
-            font-size: 2rem;
-            min-width: 3rem;
+            font-size: 1.8rem;
+            min-width: 2.5rem;
             text-align: center;
             text-shadow: 0 0 8px #f0b34b;
         }
@@ -259,11 +259,6 @@
 
         .btn-red:active {
             box-shadow: 0 3px 0 #7a1f1f, 0 8px 16px rgba(0, 0, 0, 0.4);
-        }
-
-        .btn-small {
-            font-size: 0.95rem;
-            padding: 10px 20px;
         }
 
         .hint {
@@ -524,7 +519,7 @@
             padding: 10px;
         }
 
-        /* 过草地游戏提示 */
+        /* 过草地游戏控制 */
         .grass-controls {
             display: flex;
             justify-content: center;
@@ -533,8 +528,8 @@
             flex-wrap: wrap;
         }
         .grass-controls .btn {
-            font-size: 1.3rem;
-            padding: 12px 26px;
+            font-size: 1.2rem;
+            padding: 12px 22px;
         }
         .attack-hint {
             color: #c93c3c;
@@ -554,7 +549,7 @@
             .poster-title { font-size: 1.5rem; }
             .poster-score { font-size: 2.4rem; }
             .option-btn { font-size: 1rem; padding: 12px 14px; }
-            .grass-controls .btn { font-size: 1.1rem; padding: 10px 18px; }
+            .grass-controls .btn { font-size: 1rem; padding: 10px 16px; }
         }
     </style>
 </head>
@@ -572,8 +567,8 @@
                 </div>
                 <div class="entry-card" id="entryGrass">
                     <div class="entry-icon">🌿</div>
-                    <div class="entry-name">过草地</div>
-                    <div class="entry-desc">控制小红军穿越草地，用石子击退敌人，坚持到终点。</div>
+                    <div class="entry-name">过草地·跑酷</div>
+                    <div class="entry-desc">三条跑道左右闪躲，用有限的石子击退敌人，坚持到终点。</div>
                 </div>
             </div>
             <div class="hint">点击卡片进入对应游戏</div>
@@ -599,11 +594,11 @@
             <div class="hint">⭐ 点击闪烁的红星，收集长征精神！限时30秒！</div>
         </div>
 
-        <!-- 游戏2：过草地 -->
+        <!-- 游戏2：过草地·跑酷 -->
         <div class="game-view" id="grassGameView">
             <div class="header">
-                <div class="hp-box">❤️ 体力 <span id="hpDisplay">5</span></div>
-                <div class="score-box">🪨 石子 <span id="ammoDisplay">8</span></div>
+                <div class="hp-box">❤️ 体力 <span id="hpDisplay">3</span></div>
+                <div class="score-box">🪨 石子 <span id="ammoDisplay">5</span></div>
                 <div class="timer-box">⏳ 时间 <span id="grassTimerDisplay">30</span></div>
                 <button class="back-btn" id="backFromGrass">← 返回</button>
             </div>
@@ -611,19 +606,19 @@
                 <canvas id="grassCanvas" width="720" height="400"></canvas>
             </div>
             <div class="message-area" id="grassMessage">
-                点击开始，红军过草地！用石子击退敌人，坚持30秒。
+                点击开始，三条跑道左右闪躲，石子有限，坚持30秒！
             </div>
             <div class="button-panel grass-controls">
-                <button class="btn" id="moveLeftBtn">← 左移</button>
+                <button class="btn" id="moveLeftBtn">← 左跑道</button>
                 <button class="btn btn-red" id="attackBtn">🪨 扔石子</button>
-                <button class="btn" id="moveRightBtn">右移 →</button>
+                <button class="btn" id="moveRightBtn">右跑道 →</button>
             </div>
             <div class="grass-controls" style="margin-top:10px;">
                 <button class="btn btn-red" id="startGrassBtn">🌿 开始过草地</button>
                 <button class="btn" id="resetGrassBtn">🔄 重新开始</button>
             </div>
-            <div class="attack-hint">石子有限，省着用！敌人靠近会扣体力。</div>
-            <div class="hint">键盘 ← → 移动，空格扔石子</div>
+            <div class="attack-hint">石子只有5颗，敌人会从前方来，左右切换跑道躲避！</div>
+            <div class="hint">键盘 ← → 切换跑道，空格扔石子</div>
         </div>
     </div>
 
@@ -697,7 +692,6 @@
                 homeView.classList.remove('hidden');
                 starGameView.classList.remove('active');
                 grassGameView.classList.remove('active');
-                // 停止两个游戏
                 stopStarGame();
                 stopGrassGame();
             }
@@ -1003,7 +997,7 @@
             startStarBtn.addEventListener('click', startStarGame);
             resetStarBtn.addEventListener('click', resetStarGame);
 
-            // ==================== 游戏2：过草地 ====================
+            // ==================== 游戏2：过草地·跑酷（三条跑道） ====================
             const grassCanvas = document.getElementById('grassCanvas');
             const grassCtx = grassCanvas.getContext('2d');
             const hpDisplay = document.getElementById('hpDisplay');
@@ -1016,25 +1010,36 @@
             const moveRightBtn = document.getElementById('moveRightBtn');
             const attackBtn = document.getElementById('attackBtn');
 
-            // 过草地状态
-            let player = { x: 360, y: 330, width: 44, height: 44 };
-            let enemies = [];
-            let bullets = [];
-            let hp = 5;
-            let ammo = 8;
+            const GRASS_CW = 720, GRASS_CH = 400;
+            const LANE_COUNT = 3;
+            const LANE_WIDTH = GRASS_CW / LANE_COUNT;
+            // 跑道中心x坐标
+            function laneCenterX(lane) {
+                return LANE_WIDTH * lane + LANE_WIDTH / 2;
+            }
+
+            // 玩家状态
+            let playerLane = 1; // 0左 1中 2右
+            let player = { x: laneCenterX(1), y: 330 };
+            const PLAYER_WIDTH = 44;
+            const PLAYER_HEIGHT = 50;
+
+            let hp = 3;
+            let ammo = 5;
             let grassTimeLeft = 30;
             let grassActive = false;
             let grassInterval = null;
             let enemySpawnTimer = null;
             let grassAnimationId = null;
-            let playerInvincible = 0; // 受伤后的无敌帧时间(秒)
-            let moveDirection = 0; // -1左 1右 0停止
+            let playerInvincible = 0;
             let keys = {};
 
-            const GRASS_CW = 720, GRASS_CH = 400;
-            const PLAYER_SPEED = 260; // 像素/秒
+            let enemies = [];   // { lane, y, radius, speed }
+            let bullets = [];   // { x, y, vy, radius }
+
             const BULLET_SPEED = 520;
-            const ENEMY_SPEED = 45;
+            const ENEMY_SPEED = 95;
+            const PLAYER_HIT_RADIUS = 26;
 
             function resetGrassGame() {
                 if (grassInterval) clearInterval(grassInterval);
@@ -1042,18 +1047,18 @@
                 grassInterval = null; enemySpawnTimer = null;
                 grassActive = false;
 
-                player.x = 360;
+                playerLane = 1;
+                player.x = laneCenterX(1);
                 player.y = 330;
                 enemies = [];
                 bullets = [];
-                hp = 5;
-                ammo = 8;
+                hp = 3;
+                ammo = 5;
                 grassTimeLeft = 30;
                 playerInvincible = 0;
-                moveDirection = 0;
                 keys = {};
                 updateGrassHUD();
-                grassMessage.textContent = '点击开始，红军过草地！用石子击退敌人，坚持30秒。';
+                grassMessage.textContent = '点击开始，三条跑道左右闪躲，石子有限，坚持30秒！';
                 startGrassBtn.disabled = false;
                 drawGrassScene();
                 startGrassAnimation();
@@ -1077,7 +1082,7 @@
                 resetGrassGame();
                 grassActive = true;
                 startGrassBtn.disabled = true;
-                grassMessage.textContent = '红军过草地！小心敌人，石子有限！';
+                grassMessage.textContent = '红军过草地！三条跑道，左右闪躲，石子省着用！';
 
                 grassInterval = setInterval(() => {
                     if (!grassActive) return;
@@ -1090,46 +1095,80 @@
 
                 enemySpawnTimer = setInterval(() => {
                     if (!grassActive) return;
-                    if (enemies.length < 6 && Math.random() < 0.7) {
+                    if (enemies.length < 5) {
                         spawnEnemy();
                     }
-                }, 900);
+                }, 750);
 
-                // 初始生成1个敌人
                 spawnEnemy();
             }
 
             function spawnEnemy() {
-                const radius = 18;
-                const x = Math.random() * (GRASS_CW - 2 * radius) + radius;
+                const lane = Math.floor(Math.random() * LANE_COUNT);
+                const radius = 20;
                 enemies.push({
-                    x: x,
-                    y: -radius, // 从顶边出现
+                    lane: lane,
+                    x: laneCenterX(lane),
+                    y: -radius - 10,
                     radius: radius,
-                    speed: ENEMY_SPEED + Math.random() * 30
+                    speed: ENEMY_SPEED + Math.random() * 45
                 });
+            }
+
+            function movePlayerLeft() {
+                if (!grassActive) return;
+                if (playerLane > 0) {
+                    playerLane--;
+                    player.x = laneCenterX(playerLane);
+                }
+            }
+            function movePlayerRight() {
+                if (!grassActive) return;
+                if (playerLane < LANE_COUNT - 1) {
+                    playerLane++;
+                    player.x = laneCenterX(playerLane);
+                }
             }
 
             function shootBullet() {
                 if (!grassActive) return;
                 if (ammo <= 0) {
-                    grassMessage.textContent = '石子用完了！只能躲避了！';
+                    grassMessage.textContent = '石子用完了！只能左右躲避了！';
                     return;
                 }
                 ammo--;
                 updateGrassHUD();
+                // 从当前跑道向上发射
                 bullets.push({
                     x: player.x,
-                    y: player.y - 18,
-                    radius: 6,
+                    y: player.y - 22,
+                    radius: 7,
                     vy: -BULLET_SPEED
                 });
                 grassMessage.textContent = '扔出一颗石子！';
             }
 
-            // 绘制过草地场景
+            function drawMiniStar(ctx, cx, cy, spikes, outerR, innerR, color) {
+                let rot = Math.PI / 2 * 3;
+                const step = Math.PI / spikes;
+                ctx.beginPath();
+                for (let i = 0; i < spikes; i++) {
+                    const x1 = cx + Math.cos(rot) * outerR;
+                    const y1 = cy + Math.sin(rot) * outerR;
+                    ctx.lineTo(x1, y1);
+                    rot += step;
+                    const x2 = cx + Math.cos(rot) * innerR;
+                    const y2 = cy + Math.sin(rot) * innerR;
+                    ctx.lineTo(x2, y2);
+                    rot += step;
+                }
+                ctx.closePath();
+                ctx.fillStyle = color;
+                ctx.fill();
+            }
+
             function drawGrassScene() {
-                // 草地渐变
+                // 草地渐变背景
                 const grad = grassCtx.createLinearGradient(0, 0, 0, GRASS_CH);
                 grad.addColorStop(0, '#6b8c5a');
                 grad.addColorStop(0.5, '#4f6b3e');
@@ -1137,15 +1176,32 @@
                 grassCtx.fillStyle = grad;
                 grassCtx.fillRect(0, 0, GRASS_CW, GRASS_CH);
 
-                // 草地纹理
-                for (let i = 0; i < 60; i++) {
+                // 绘制三条跑道分隔线
+                grassCtx.strokeStyle = 'rgba(220, 210, 170, 0.35)';
+                grassCtx.lineWidth = 4;
+                grassCtx.setLineDash([18, 16]);
+                for (let i = 1; i < LANE_COUNT; i++) {
+                    const x = i * LANE_WIDTH;
+                    grassCtx.beginPath();
+                    grassCtx.moveTo(x, 0);
+                    grassCtx.lineTo(x, GRASS_CH);
+                    grassCtx.stroke();
+                }
+                grassCtx.setLineDash([]);
+
+                // 跑道内部草地纹理
+                for (let i = 0; i < 70; i++) {
                     const x = (i * 37 + 13) % GRASS_CW;
                     const y = (i * 23 + 7) % GRASS_CH;
                     grassCtx.beginPath();
-                    grassCtx.ellipse(x, y, 6, 3, 0, 0, Math.PI * 2);
+                    grassCtx.ellipse(x, y, 5, 2.5, 0, 0, Math.PI * 2);
                     grassCtx.fillStyle = '#5e7a4a';
                     grassCtx.fill();
                 }
+
+                // 跑道高亮：玩家所在跑道轻微高亮
+                grassCtx.fillStyle = 'rgba(255, 235, 150, 0.08)';
+                grassCtx.fillRect(playerLane * LANE_WIDTH, 0, LANE_WIDTH, GRASS_CH);
 
                 // 远处的山
                 grassCtx.fillStyle = '#7e9a6b';
@@ -1161,12 +1217,12 @@
                 grassCtx.lineTo(0, 220);
                 grassCtx.fill();
 
-                // 画玩家（小红军：五角星帽子+身体）
+                // 画玩家（小红军）
                 grassCtx.save();
                 if (playerInvincible > 0 && Math.floor(playerInvincible * 10) % 2 === 0) {
                     grassCtx.globalAlpha = 0.5;
                 }
-                // 身体（灰色军装）
+                // 身体
                 grassCtx.fillStyle = '#6b6b5a';
                 grassCtx.beginPath();
                 grassCtx.ellipse(player.x, player.y + 6, 16, 18, 0, 0, Math.PI * 2);
@@ -1176,12 +1232,12 @@
                 grassCtx.beginPath();
                 grassCtx.arc(player.x, player.y - 12, 13, 0, Math.PI * 2);
                 grassCtx.fill();
-                // 八角帽（灰绿色）
+                // 八角帽
                 grassCtx.fillStyle = '#4a5a3a';
                 grassCtx.beginPath();
                 grassCtx.ellipse(player.x, player.y - 22, 18, 8, 0, 0, Math.PI * 2);
                 grassCtx.fill();
-                // 帽子上的红星
+                // 帽子红星
                 drawMiniStar(grassCtx, player.x, player.y - 24, 5, 7, 3, '#ff3333');
                 // 眼睛
                 grassCtx.fillStyle = '#222';
@@ -1189,16 +1245,16 @@
                 grassCtx.arc(player.x - 5, player.y - 15, 2, 0, Math.PI * 2);
                 grassCtx.arc(player.x + 5, player.y - 15, 2, 0, Math.PI * 2);
                 grassCtx.fill();
-                // 枪（简单的步枪线条，但子弹是石子，所以这里画个弹弓/手）
+                // 弹弓（表示石子攻击）
                 grassCtx.strokeStyle = '#5a4a2a';
                 grassCtx.lineWidth = 3;
                 grassCtx.beginPath();
-                grassCtx.moveTo(player.x + 10, player.y - 2);
-                grassCtx.lineTo(player.x + 20, player.y - 20);
+                grassCtx.moveTo(player.x + 12, player.y - 4);
+                grassCtx.lineTo(player.x + 22, player.y - 22);
                 grassCtx.stroke();
                 grassCtx.restore();
 
-                // 画敌人（黑色/深色剪影，戴钢盔）
+                // 画敌人
                 for (let e of enemies) {
                     // 身体
                     grassCtx.fillStyle = '#2b2b2b';
@@ -1231,7 +1287,6 @@
                     grassCtx.beginPath();
                     grassCtx.arc(b.x, b.y, b.radius, 0, Math.PI * 2);
                     grassCtx.fill();
-                    // 高光
                     grassCtx.fillStyle = '#cfc3a0';
                     grassCtx.beginPath();
                     grassCtx.arc(b.x - 2, b.y - 2, 2, 0, Math.PI * 2);
@@ -1239,7 +1294,7 @@
                     grassCtx.shadowBlur = 0;
                 }
 
-                // 画剩余弹药提示
+                // 顶部状态文字
                 grassCtx.font = '16px "Segoe UI"';
                 grassCtx.fillStyle = '#ffd966';
                 grassCtx.shadowColor = '#000';
@@ -1250,42 +1305,9 @@
                 grassCtx.shadowBlur = 0;
             }
 
-            function drawMiniStar(ctx, cx, cy, spikes, outerR, innerR, color) {
-                let rot = Math.PI / 2 * 3;
-                const step = Math.PI / spikes;
-                ctx.beginPath();
-                for (let i = 0; i < spikes; i++) {
-                    const x1 = cx + Math.cos(rot) * outerR;
-                    const y1 = cy + Math.sin(rot) * outerR;
-                    ctx.lineTo(x1, y1);
-                    rot += step;
-                    const x2 = cx + Math.cos(rot) * innerR;
-                    const y2 = cy + Math.sin(rot) * innerR;
-                    ctx.lineTo(x2, y2);
-                    rot += step;
-                }
-                ctx.closePath();
-                ctx.fillStyle = color;
-                ctx.fill();
-            }
-
-            // 更新过草地逻辑
             let grassLastTs = 0;
             function updateGrass(deltaSec) {
-                // 玩家移动
-                if (moveDirection !== 0) {
-                    player.x += moveDirection * PLAYER_SPEED * deltaSec;
-                }
-                // 键盘移动
-                if (keys['ArrowLeft'] || keys['KeyA']) player.x -= PLAYER_SPEED * deltaSec;
-                if (keys['ArrowRight'] || keys['KeyD']) player.x += PLAYER_SPEED * deltaSec;
-
-                // 边界限制
-                const margin = 30;
-                if (player.x < margin) player.x = margin;
-                if (player.x > GRASS_CW - margin) player.x = GRASS_CW - margin;
-
-                // 无敌帧递减
+                // 无敌帧
                 if (playerInvincible > 0) {
                     playerInvincible -= deltaSec;
                     if (playerInvincible < 0) playerInvincible = 0;
@@ -1299,7 +1321,7 @@
                         bullets.splice(i, 1);
                         continue;
                     }
-                    // 碰撞检测：子弹 vs 敌人
+                    // 子弹 vs 敌人
                     let hit = false;
                     for (let j = enemies.length - 1; j >= 0; j--) {
                         const e = enemies[j];
@@ -1312,29 +1334,30 @@
                             break;
                         }
                     }
-                    if (hit) {
-                        bullets.splice(i, 1);
-                    }
+                    if (hit) bullets.splice(i, 1);
                 }
 
                 // 更新敌人
                 for (let i = enemies.length - 1; i >= 0; i--) {
                     const e = enemies[i];
                     e.y += e.speed * deltaSec;
-                    // 超出底部则移除（放跑敌人不扣血，但分数无加成）
+
+                    // 超出底部
                     if (e.y > GRASS_CH + 30) {
                         enemies.splice(i, 1);
                         continue;
                     }
-                    // 与玩家碰撞检测
+
+                    // 与玩家碰撞（只有同一跑道才会碰撞）
                     if (playerInvincible <= 0) {
                         const dx = player.x - e.x;
                         const dy = player.y - e.y;
                         const dist = Math.sqrt(dx * dx + dy * dy);
-                        if (dist < 28) {
+                        // 同一跑道且距离足够近才扣血
+                        if (e.lane === playerLane && dist < PLAYER_HIT_RADIUS + e.radius * 0.6) {
                             hp--;
                             updateGrassHUD();
-                            playerInvincible = 1.5; // 1.5秒无敌
+                            playerInvincible = 1.5;
                             enemies.splice(i, 1);
                             if (hp <= 0) {
                                 hp = 0;
@@ -1374,7 +1397,7 @@
             }
 
             function endGrassGame(survived) {
-                if (!grassActive && !survived) return;
+                if (!grassActive) return;
                 grassActive = false;
                 startGrassBtn.disabled = false;
                 if (grassInterval) clearInterval(grassInterval);
@@ -1384,47 +1407,35 @@
                 let evalTitle = '', quote = '', finalScore = 0;
 
                 if (survived && hp > 0) {
-                    // 坚持到最后，根据剩余体力和时间给评价
-                    finalScore = hp * 2 + Math.floor(grassTimeLeft / 5);
-                    if (hp >= 5) {
+                    finalScore = hp * 4 + Math.floor(ammo * 1.5);
+                    if (hp >= 3) {
                         evalTitle = '钢铁红军 ★★★★★';
                         quote = '“更喜岷山千里雪，三军过后尽开颜。” 你毫发无伤走过草地！';
-                    } else if (hp >= 3) {
+                    } else if (hp === 2) {
                         evalTitle = '顽强战士 ★★★★';
                         quote = '“五岭逶迤腾细浪，乌蒙磅礴走泥丸。” 你顽强地走出了草地！';
-                    } else if (hp >= 1) {
+                    } else {
                         evalTitle = '不屈行者 ★★★';
                         quote = '“金沙水拍云崖暖，大渡桥横铁索寒。” 你坚持到了最后！';
-                    } else {
-                        evalTitle = '悲壮英雄 ★★';
-                        quote = '“红军不怕远征难，万水千山只等闲。” 你倒在了草地上，但精神永存！';
                     }
                 } else {
-                    // 体力耗尽
-                    finalScore = Math.max(0, (5 - hp) * 0) + 0; // 0分
+                    finalScore = 0;
                     evalTitle = '英勇牺牲 ★';
                     quote = '“为有牺牲多壮志，敢教日月换新天。” 你为长征献出了生命，精神不朽！';
-                }
-
-                // 确保分数显示有意义
-                if (survived && hp > 0) {
-                    finalScore = hp * 3;
-                } else {
-                    finalScore = 0;
                 }
 
                 showResultModal(finalScore, evalTitle, quote);
             }
 
-            // 按键控制
+            // 键盘控制
             function handleKeyDown(e) {
                 if (!grassActive) return;
                 if (e.code === 'ArrowLeft' || e.code === 'KeyA') {
-                    keys['ArrowLeft'] = true;
+                    movePlayerLeft();
                     e.preventDefault();
                 }
                 if (e.code === 'ArrowRight' || e.code === 'KeyD') {
-                    keys['ArrowRight'] = true;
+                    movePlayerRight();
                     e.preventDefault();
                 }
                 if (e.code === 'Space') {
@@ -1432,26 +1443,11 @@
                     shootBullet();
                 }
             }
-            function handleKeyUp(e) {
-                if (e.code === 'ArrowLeft' || e.code === 'KeyA') keys['ArrowLeft'] = false;
-                if (e.code === 'ArrowRight' || e.code === 'KeyD') keys['ArrowRight'] = false;
-            }
             window.addEventListener('keydown', handleKeyDown);
-            window.addEventListener('keyup', handleKeyUp);
 
             // 按钮控制
-            moveLeftBtn.addEventListener('mousedown', () => { moveDirection = -1; });
-            moveLeftBtn.addEventListener('mouseup', () => { moveDirection = 0; });
-            moveLeftBtn.addEventListener('mouseleave', () => { moveDirection = 0; });
-            moveLeftBtn.addEventListener('touchstart', (e) => { e.preventDefault(); moveDirection = -1; });
-            moveLeftBtn.addEventListener('touchend', (e) => { e.preventDefault(); moveDirection = 0; });
-
-            moveRightBtn.addEventListener('mousedown', () => { moveDirection = 1; });
-            moveRightBtn.addEventListener('mouseup', () => { moveDirection = 0; });
-            moveRightBtn.addEventListener('mouseleave', () => { moveDirection = 0; });
-            moveRightBtn.addEventListener('touchstart', (e) => { e.preventDefault(); moveDirection = 1; });
-            moveRightBtn.addEventListener('touchend', (e) => { e.preventDefault(); moveDirection = 0; });
-
+            moveLeftBtn.addEventListener('click', movePlayerLeft);
+            moveRightBtn.addEventListener('click', movePlayerRight);
             attackBtn.addEventListener('click', shootBullet);
             startGrassBtn.addEventListener('click', startGrassGame);
             resetGrassBtn.addEventListener('click', resetGrassGame);
@@ -1481,7 +1477,7 @@
                 questionSection.style.display = 'block';
                 modalCloseBtn.textContent = '下一步';
                 modalCloseBtn.disabled = false;
-                modalCloseBtn.onclick = null; // 清除旧事件
+                modalCloseBtn.onclick = null;
 
                 if (!questionLoaded) {
                     questionText.textContent = '题库加载中，请稍候...';
@@ -1524,36 +1520,30 @@
                 modalOverlay.classList.add('active');
             }
 
-            // 弹窗关闭按钮（下一步/完成）
             modalCloseBtn.addEventListener('click', function() {
                 if (questionSection.style.display !== 'none') {
-                    // 显示恭喜
                     questionSection.style.display = 'none';
                     congratsArea.classList.add('show');
                     modalCloseBtn.textContent = '完成';
-                    // 修改点击行为为关闭
                     modalCloseBtn.onclick = function() {
                         modalOverlay.classList.remove('active');
                         modalCloseBtn.onclick = null;
-                        // 刷新当前游戏状态
                         if (starGameView.classList.contains('active')) resetStarGame();
                         if (grassGameView.classList.contains('active')) resetGrassGame();
                         startStarAnimation();
                         startGrassAnimation();
                     };
                 } else {
-                    // 直接关闭
                     modalOverlay.classList.remove('active');
                     if (starGameView.classList.contains('active')) resetStarGame();
                     if (grassGameView.classList.contains('active')) resetGrassGame();
                 }
             });
 
-            // 初始化：加载题库并显示首页
+            // ==================== 初始化 ====================
             async function init() {
                 await loadQuestions();
                 showHome();
-                // 启动两个游戏的动画循环（虽然隐藏但会绘制背景，避免切换时空白）
                 startStarAnimation();
                 startGrassAnimation();
             }
