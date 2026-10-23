@@ -1,0 +1,944 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>长征·红星之路 | 同学集结令</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            user-select: none;
+        }
+
+        body {
+            background: #1b2a1f;
+            background-image: radial-gradient(circle at 10% 20%, #2e4a33, #0f1a12);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: 'Segoe UI', '华文楷体', 'KaiTi', 'Microsoft YaHei', sans-serif;
+            padding: 16px;
+        }
+
+        .game-container {
+            max-width: 780px;
+            width: 100%;
+            background: #d9c8a9;
+            background: linear-gradient(145deg, #e6d7ba 0%, #c8b48b 100%);
+            border-radius: 48px 48px 32px 32px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.7), inset 0 2px 6px rgba(255, 255, 200, 0.6);
+            padding: 24px 24px 30px;
+            border: 4px solid #aa8e5c;
+            position: relative;
+            transition: all 0.2s;
+        }
+
+        .game-container::before {
+            content: "★";
+            position: absolute;
+            top: -18px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 38px;
+            color: #c93c3c;
+            text-shadow: 0 0 10px #ffb347, 0 0 20px #ff4d4d;
+            line-height: 1;
+            filter: drop-shadow(0 4px 2px rgba(0, 0, 0, 0.5));
+            letter-spacing: 0;
+            background: #e6d7ba;
+            padding: 0 12px;
+            border-radius: 50%;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #2e3f2b;
+            padding: 12px 20px;
+            border-radius: 100px;
+            margin-bottom: 20px;
+            border: 2px solid #b99b5e;
+            box-shadow: inset 0 2px 5px rgba(0,0,0,0.6), 0 6px 0 #1d2a1a;
+            color: #f9eec1;
+            font-weight: bold;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .score-box, .timer-box {
+            background: #1f2b1d;
+            padding: 6px 22px;
+            border-radius: 40px;
+            font-size: 1.4rem;
+            letter-spacing: 2px;
+            box-shadow: inset 0 -3px 0 #0b100a, 0 4px 0 #0a0f08;
+            color: #fadf9e;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            border: 1px solid #dbb45c;
+        }
+
+        .score-box span, .timer-box span {
+            color: #ffd966;
+            font-size: 2rem;
+            min-width: 3rem;
+            text-align: center;
+            text-shadow: 0 0 8px #f0b34b;
+        }
+
+        .canvas-wrapper {
+            position: relative;
+            border-radius: 30px;
+            overflow: hidden;
+            box-shadow: inset 0 0 0 4px #b99b5e, 0 12px 20px rgba(0, 0, 0, 0.5);
+            margin-bottom: 18px;
+            background: #4a6b3f;
+        }
+
+        canvas {
+            display: block;
+            width: 100%;
+            height: auto;
+            cursor: pointer;
+            background: #7f9f6b;
+            background-image: linear-gradient(45deg, #6d8c5a 20%, #8cb37b 80%);
+            transition: filter 0.1s;
+        }
+
+        canvas:active {
+            filter: brightness(0.95);
+        }
+
+        .message-area {
+            background: #2b3827;
+            border-radius: 36px;
+            padding: 14px 26px;
+            text-align: center;
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: #ffeab0;
+            min-height: 72px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid #b3934b;
+            box-shadow: inset 0 -4px 0 #10180e, 0 6px 0 #1e2a1a;
+            margin-bottom: 18px;
+            letter-spacing: 1px;
+            text-shadow: 0 2px 3px black;
+            transition: 0.3s;
+            line-height: 1.4;
+            word-break: break-word;
+        }
+
+        .button-panel {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 18px;
+        }
+
+        .btn {
+            background: #c49b3f;
+            border: none;
+            border-radius: 60px;
+            font-size: 1.4rem;
+            font-weight: bold;
+            padding: 14px 40px;
+            color: #1e2a12;
+            letter-spacing: 2px;
+            box-shadow: 0 9px 0 #7a5c24, 0 8px 16px rgba(0, 0, 0, 0.4);
+            cursor: pointer;
+            transition: 0.08s linear;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            text-shadow: 0 1px 0 #ffe28c;
+            border: 1px solid #f3d47c;
+            flex: 0 1 auto;
+            font-family: inherit;
+        }
+
+        .btn:active {
+            transform: translateY(6px);
+            box-shadow: 0 3px 0 #7a5c24, 0 8px 16px rgba(0, 0, 0, 0.4);
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            transform: translateY(5px);
+            box-shadow: 0 4px 0 #7a5c24;
+            pointer-events: none;
+            filter: grayscale(0.6);
+        }
+
+        .btn-red {
+            background: #c93c3c;
+            box-shadow: 0 9px 0 #7a1f1f, 0 8px 16px rgba(0, 0, 0, 0.4);
+            color: #fff3cf;
+            text-shadow: 0 2px 2px black;
+            border-color: #f3b0b0;
+        }
+
+        .btn-red:active {
+            box-shadow: 0 3px 0 #7a1f1f, 0 8px 16px rgba(0, 0, 0, 0.4);
+        }
+
+        .hint {
+            font-size: 0.85rem;
+            color: #3f4d36;
+            margin-top: 16px;
+            text-align: center;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.85);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            padding: 20px;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s, visibility 0.3s;
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal-content {
+            background: #2d3e28;
+            max-width: 680px;
+            width: 100%;
+            border-radius: 40px;
+            padding: 26px 28px 30px;
+            border: 6px solid #b3934b;
+            box-shadow: 0 0 50px #dbb45c, inset 0 0 30px #5f7a4e;
+            color: #f9efcf;
+            text-align: center;
+            position: relative;
+            max-height: 90vh;
+            overflow-y: auto;
+            background-image: radial-gradient(circle at 20% 30%, #3d5a34, #1e2b19);
+            transform: scale(0.9);
+            transition: transform 0.3s;
+        }
+
+        .modal-overlay.active .modal-content {
+            transform: scale(1);
+        }
+
+        .poster-area {
+            background: #fbf3e0;
+            border-radius: 24px;
+            padding: 22px 18px;
+            margin-bottom: 22px;
+            color: #2d2d1c;
+            box-shadow: inset 0 0 0 3px #b99b5e, 0 12px 18px rgba(0,0,0,0.5);
+            background-image: repeating-linear-gradient(45deg, #fff7e6 0px, #fff7e6 12px, #f3e8d0 12px, #f3e8d0 24px);
+        }
+
+        .poster-title {
+            font-size: 2rem;
+            font-weight: 900;
+            color: #b22222;
+            letter-spacing: 4px;
+            text-shadow: 3px 3px 0 #e6c87a, 0 0 10px #ffb347;
+            margin-bottom: 8px;
+            font-family: 'KaiTi', '华文楷体', cursive;
+        }
+
+        .poster-sub {
+            font-size: 1rem;
+            color: #5a4a2a;
+            margin-bottom: 12px;
+            font-weight: 600;
+            border-bottom: 2px dashed #b99b5e;
+            padding-bottom: 10px;
+        }
+
+        .poster-score {
+            font-size: 3.2rem;
+            font-weight: 900;
+            color: #c93c3c;
+            line-height: 1.2;
+            text-shadow: 0 0 15px #ffb347;
+            margin: 12px 0;
+        }
+
+        .poster-eval {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: #2e3f2b;
+            background: #e6d7ba;
+            display: inline-block;
+            padding: 6px 30px;
+            border-radius: 40px;
+            margin: 8px 0 12px;
+            border: 2px solid #b3934b;
+            box-shadow: 0 4px 0 #7a5c24;
+        }
+
+        .poster-quote {
+            font-style: italic;
+            color: #6b4f2a;
+            font-size: 1.1rem;
+            margin-top: 8px;
+            font-weight: 500;
+        }
+
+        .question-section {
+            background: #1f2b1d;
+            border-radius: 30px;
+            padding: 20px 18px;
+            margin-top: 8px;
+            border: 2px solid #b3934b;
+        }
+
+        .question-text {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: #ffd966;
+            margin-bottom: 18px;
+            line-height: 1.4;
+        }
+
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .option-btn {
+            background: #3d5538;
+            border: 2px solid #b99b5e;
+            border-radius: 50px;
+            padding: 14px 18px;
+            font-size: 1.15rem;
+            font-weight: 600;
+            color: #f0e6c8;
+            text-align: left;
+            cursor: pointer;
+            transition: 0.1s;
+            box-shadow: 0 5px 0 #1f2b1d;
+            font-family: inherit;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .option-btn:hover {
+            background: #4f6b45;
+        }
+
+        .option-btn:active {
+            transform: translateY(4px);
+            box-shadow: 0 1px 0 #1f2b1d;
+        }
+
+        .option-btn.correct {
+            background: #2e7d32;
+            border-color: #a5d6a7;
+            box-shadow: 0 5px 0 #1b5e1b;
+            color: #fff;
+        }
+
+        .option-btn.wrong {
+            background: #9b2c2c;
+            border-color: #e57373;
+            box-shadow: 0 5px 0 #5e1717;
+            color: #fff;
+        }
+
+        .option-btn:disabled {
+            opacity: 0.8;
+            pointer-events: none;
+            transform: translateY(4px);
+            box-shadow: 0 1px 0 #1f2b1d;
+        }
+
+        .feedback-text {
+            font-size: 1.1rem;
+            color: #ffd966;
+            margin: 14px 0 10px;
+            min-height: 2rem;
+            font-weight: 600;
+        }
+
+        .modal-close-btn {
+            background: #c49b3f;
+            border: none;
+            border-radius: 60px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            padding: 12px 36px;
+            color: #1e2a12;
+            letter-spacing: 1px;
+            box-shadow: 0 7px 0 #7a5c24;
+            cursor: pointer;
+            transition: 0.08s;
+            margin-top: 12px;
+            font-family: inherit;
+        }
+
+        .modal-close-btn:active {
+            transform: translateY(5px);
+            box-shadow: 0 2px 0 #7a5c24;
+        }
+
+        .congrats-area {
+            background: #2e7d32;
+            border-radius: 30px;
+            padding: 18px;
+            margin: 16px 0 8px;
+            color: #fff9c4;
+            font-size: 1.5rem;
+            font-weight: 800;
+            text-shadow: 0 2px 4px black;
+            box-shadow: inset 0 -4px 0 #1b5e1b;
+            border: 2px solid #a5d6a7;
+            display: none;
+        }
+
+        .congrats-area.show {
+            display: block;
+            animation: pop 0.5s ease;
+        }
+
+        @keyframes pop {
+            0% { transform: scale(0.8); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        .loading-text {
+            color: #ffd966;
+            font-size: 1rem;
+            padding: 10px;
+        }
+
+        @media (max-width: 550px) {
+            .game-container {
+                padding: 16px 12px 22px;
+            }
+            .score-box, .timer-box {
+                font-size: 1rem;
+                padding: 4px 12px;
+            }
+            .score-box span, .timer-box span {
+                font-size: 1.4rem;
+                min-width: 2rem;
+            }
+            .btn {
+                font-size: 1.1rem;
+                padding: 12px 20px;
+            }
+            .message-area {
+                font-size: 1rem;
+                min-height: 64px;
+                padding: 10px 12px;
+            }
+            .poster-title {
+                font-size: 1.5rem;
+            }
+            .poster-score {
+                font-size: 2.4rem;
+            }
+            .option-btn {
+                font-size: 1rem;
+                padding: 12px 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="game-container">
+        <div class="header">
+            <div class="score-box">🌟 红星 <span id="scoreDisplay">0</span></div>
+            <div class="timer-box">⏳ 时间 <span id="timerDisplay">30</span></div>
+        </div>
+
+        <div class="canvas-wrapper">
+            <canvas id="gameCanvas" width="720" height="400"></canvas>
+        </div>
+
+        <div class="message-area" id="messageBox">
+            点击开始，踏上长征路！
+        </div>
+
+        <div class="button-panel">
+            <button class="btn btn-red" id="startBtn" autofocus>🚩 开始长征</button>
+            <button class="btn" id="resetBtn">⛰️ 重新出发</button>
+        </div>
+        <div class="hint">⭐ 点击闪烁的红星，收集长征精神！限时30秒！</div>
+    </div>
+
+    <div class="modal-overlay" id="modalOverlay">
+        <div class="modal-content">
+            <div class="poster-area" id="posterArea">
+                <div class="poster-title">★ 长征红星勋章 ★</div>
+                <div class="poster-sub">—— 献给新时代的接班人 ——</div>
+                <div class="poster-score" id="posterScore">0</div>
+                <div class="poster-eval" id="posterEval">长征精神传承者</div>
+                <div class="poster-quote" id="posterQuote">“红军不怕远征难，万水千山只等闲”</div>
+            </div>
+
+            <div class="question-section" id="questionSection">
+                <div class="question-text" id="questionText">问题加载中...</div>
+                <div class="options" id="optionsContainer"></div>
+                <div class="feedback-text" id="feedbackText"></div>
+            </div>
+
+            <div class="congrats-area" id="congratsArea">
+                🎉 恭喜你完成小游戏！长征精神永存！ 🎉
+            </div>
+
+            <button class="modal-close-btn" id="modalCloseBtn">下一步</button>
+        </div>
+    </div>
+
+    <script>
+        (function() {
+            const canvas = document.getElementById('gameCanvas');
+            const ctx = canvas.getContext('2d');
+            const scoreSpan = document.getElementById('scoreDisplay');
+            const timerSpan = document.getElementById('timerDisplay');
+            const messageBox = document.getElementById('messageBox');
+            const startBtn = document.getElementById('startBtn');
+            const resetBtn = document.getElementById('resetBtn');
+
+            const modalOverlay = document.getElementById('modalOverlay');
+            const posterScore = document.getElementById('posterScore');
+            const posterEval = document.getElementById('posterEval');
+            const posterQuote = document.getElementById('posterQuote');
+            const questionText = document.getElementById('questionText');
+            const optionsContainer = document.getElementById('optionsContainer');
+            const feedbackText = document.getElementById('feedbackText');
+            const modalCloseBtn = document.getElementById('modalCloseBtn');
+            const congratsArea = document.getElementById('congratsArea');
+            const questionSection = document.getElementById('questionSection');
+
+            const CW = 720;
+            const CH = 400;
+
+            let score = 0;
+            let timeLeft = 30;
+            let gameActive = false;
+            let gameInterval = null;
+            let starTimer = null;
+            let stars = [];
+            let animationFrame = null;
+
+            let questions = [];
+            let currentQuestionIndex = 0;
+            let hasAnswered = false;
+            let questionLoaded = false;
+
+            const defaultQuestions = [
+                {
+                    type: "history",
+                    question: "红军长征中，中央红军（红一方面军）长征的出发地是？",
+                    options: ["江西瑞金", "陕西延安", "贵州遵义", "四川懋功"],
+                    correct: 0,
+                    explanation: "1934年10月，中央红军从江西瑞金等地出发，开始长征。"
+                },
+                {
+                    type: "poem_fill",
+                    question: "“红军不怕远征难，________。”请选择正确的下句。",
+                    options: ["万水千山只等闲", "五岭逶迤腾细浪", "三军过后尽开颜", "大渡桥横铁索寒"],
+                    correct: 0,
+                    explanation: "出自毛泽东《七律·长征》：“红军不怕远征难，万水千山只等闲。”"
+                }
+            ];
+
+            async function loadQuestions() {
+                try {
+                    const response = await fetch('./questions.json');
+                    if (!response.ok) throw new Error('Network response was not ok');
+                    questions = await response.json();
+                    questionLoaded = true;
+                    console.log('题库加载成功，共', questions.length, '道题');
+                } catch (error) {
+                    console.warn('无法加载questions.json，使用内置题库', error);
+                    questions = defaultQuestions;
+                    questionLoaded = true;
+                }
+            }
+
+            function drawBackground() {
+                const grad = ctx.createLinearGradient(0, 0, 0, CH);
+                grad.addColorStop(0, '#93b87a');
+                grad.addColorStop(0.6, '#6f9160');
+                grad.addColorStop(1, '#4a5e3a');
+                ctx.fillStyle = grad;
+                ctx.fillRect(0, 0, CW, CH);
+
+                ctx.fillStyle = '#b0c4b0';
+                ctx.beginPath();
+                ctx.moveTo(0, 280);
+                ctx.lineTo(120, 150);
+                ctx.lineTo(240, 220);
+                ctx.lineTo(360, 100);
+                ctx.lineTo(480, 190);
+                ctx.lineTo(600, 80);
+                ctx.lineTo(720, 160);
+                ctx.lineTo(720, 300);
+                ctx.lineTo(0, 300);
+                ctx.fillStyle = '#9bb08b';
+                ctx.fill();
+
+                ctx.fillStyle = '#7e9a6b';
+                ctx.beginPath();
+                ctx.moveTo(0, 300);
+                ctx.lineTo(0, 280);
+                ctx.lineTo(120, 150);
+                ctx.lineTo(240, 220);
+                ctx.lineTo(360, 100);
+                ctx.lineTo(480, 190);
+                ctx.lineTo(600, 80);
+                ctx.lineTo(720, 160);
+                ctx.lineTo(720, 300);
+                ctx.fill();
+
+                for (let i = 0; i < 30; i++) {
+                    const x = (i * 45 + 12) % CW;
+                    const y = 300 + (i * 7) % 80;
+                    ctx.beginPath();
+                    ctx.ellipse(x, y, 8, 4, 0, 0, Math.PI * 2);
+                    ctx.fillStyle = '#4f6b3e';
+                    ctx.fill();
+                }
+
+                ctx.font = 'bold 32px "Segoe UI", "KaiTi", sans-serif';
+                ctx.fillStyle = '#d43d3d';
+                ctx.shadowColor = '#f0c060';
+                ctx.shadowBlur = 10;
+                ctx.fillText('★', 40, 80);
+                ctx.shadowBlur = 0;
+                ctx.shadowColor = 'transparent';
+
+                ctx.font = '18px "Segoe UI"';
+                ctx.fillStyle = '#ffd966';
+                ctx.fillText('★', 600, 60);
+                ctx.fillText('★', 660, 110);
+                ctx.fillStyle = '#e6c87a';
+                ctx.fillText('★', 100, 330);
+            }
+
+            function drawStar(ctx, cx, cy, spikes, outerR, innerR) {
+                let rot = Math.PI / 2 * 3;
+                const step = Math.PI / spikes;
+                ctx.beginPath();
+                for (let i = 0; i < spikes; i++) {
+                    const x1 = cx + Math.cos(rot) * outerR;
+                    const y1 = cy + Math.sin(rot) * outerR;
+                    ctx.lineTo(x1, y1);
+                    rot += step;
+                    const x2 = cx + Math.cos(rot) * innerR;
+                    const y2 = cy + Math.sin(rot) * innerR;
+                    ctx.lineTo(x2, y2);
+                    rot += step;
+                }
+                ctx.closePath();
+                const gradient = ctx.createRadialGradient(cx - 5, cy - 5, 2, cx, cy, outerR + 4);
+                gradient.addColorStop(0, '#ffbb33');
+                gradient.addColorStop(0.6, '#e63946');
+                gradient.addColorStop(1, '#b22222');
+                ctx.fillStyle = gradient;
+                ctx.shadowColor = '#ffaa33';
+                ctx.shadowBlur = 16;
+                ctx.fill();
+                ctx.shadowBlur = 8;
+                ctx.strokeStyle = '#fff3b0';
+                ctx.lineWidth = 1.5;
+                ctx.stroke();
+                ctx.shadowBlur = 0;
+                ctx.shadowColor = 'transparent';
+            }
+
+            function drawStars() {
+                for (let star of stars) {
+                    if (star.collected) continue;
+                    const opacity = Math.min(1, star.life / 0.5);
+                    ctx.save();
+                    ctx.globalAlpha = opacity;
+                    drawStar(ctx, star.x, star.y, 5, star.radius, star.radius * 0.5);
+                    ctx.restore();
+                }
+            }
+
+            function updateScoreDisplay() { scoreSpan.textContent = score; }
+            function updateTimerDisplay() { timerSpan.textContent = timeLeft; }
+
+            function updateStars(deltaSec) {
+                for (let i = stars.length - 1; i >= 0; i--) {
+                    const star = stars[i];
+                    if (!star.collected) {
+                        star.life -= deltaSec;
+                        if (star.life <= 0) stars.splice(i, 1);
+                    } else {
+                        stars.splice(i, 1);
+                    }
+                }
+            }
+
+            function spawnStar() {
+                if (!gameActive) return;
+                const radius = 16 + Math.random() * 10;
+                const x = Math.random() * (CW - 2 * radius) + radius;
+                const y = Math.random() * (CH - 2 * radius - 40) + radius + 30;
+                const life = 2.2 + Math.random() * 1.8;
+                stars.push({ x, y, radius, life, maxLife: life, collected: false });
+            }
+
+            function handleCanvasClick(e) {
+                if (!gameActive) {
+                    messageBox.textContent = '请先点击「开始长征」！';
+                    return;
+                }
+                const rect = canvas.getBoundingClientRect();
+                const scaleX = canvas.width / rect.width;
+                const scaleY = canvas.height / rect.height;
+                const mouseX = (e.clientX - rect.left) * scaleX;
+                const mouseY = (e.clientY - rect.top) * scaleY;
+                for (let i = stars.length - 1; i >= 0; i--) {
+                    const star = stars[i];
+                    if (star.collected) continue;
+                    const dx = mouseX - star.x;
+                    const dy = mouseY - star.y;
+                    const dist = Math.sqrt(dx * dx + dy * dy);
+                    if (dist <= star.radius + 8) {
+                        star.collected = true;
+                        score++;
+                        updateScoreDisplay();
+                        const encouragements = [
+                            '⭐ 红军不怕远征难！', '🔥 星星之火，可以燎原！', '🌟 长征精神，永放光芒！',
+                            '💪 四渡赤水出奇兵！', '🏔️ 翻越夹金山！', '🌾 过草地，不拿群众一针一线！',
+                            '🎯 胜利会师！', '❤️ 传承红色基因！'
+                        ];
+                        messageBox.textContent = encouragements[Math.floor(Math.random() * encouragements.length)];
+                        stars.splice(i, 1);
+                        break;
+                    }
+                }
+            }
+
+            let lastTimestamp = 0;
+            function animate(timestamp) {
+                if (!lastTimestamp) lastTimestamp = timestamp;
+                const deltaSec = Math.min(0.05, (timestamp - lastTimestamp) / 1000);
+                lastTimestamp = timestamp;
+                if (gameActive) updateStars(deltaSec);
+                drawBackground();
+                drawStars();
+                animationFrame = requestAnimationFrame(animate);
+            }
+
+            function startAnimationLoop() {
+                if (!animationFrame) {
+                    lastTimestamp = 0;
+                    animationFrame = requestAnimationFrame(animate);
+                }
+            }
+
+            function resetGameData() {
+                if (gameInterval) clearInterval(gameInterval);
+                if (starTimer) clearInterval(starTimer);
+                if (animationFrame) cancelAnimationFrame(animationFrame);
+                gameInterval = null; starTimer = null; animationFrame = null;
+                gameActive = false;
+                score = 0; timeLeft = 30; stars = []; hasAnswered = false;
+                updateScoreDisplay(); updateTimerDisplay();
+                startBtn.disabled = false;
+                messageBox.textContent = '点击开始，踏上长征路！';
+                drawBackground(); drawStars();
+            }
+
+            function startGame() {
+                if (gameActive) return;
+                resetGameData();
+                gameActive = true;
+                startBtn.disabled = true;
+                messageBox.textContent = '长征开始！点击红星，收集信仰！';
+                score = 0; timeLeft = 30;
+                updateScoreDisplay(); updateTimerDisplay();
+                stars = [];
+
+                gameInterval = setInterval(() => {
+                    if (!gameActive) return;
+                    timeLeft -= 1;
+                    updateTimerDisplay();
+                    if (timeLeft <= 0) {
+                        timeLeft = 0; updateTimerDisplay(); endGame();
+                    } else if (timeLeft === 5) {
+                        messageBox.textContent = '⏰ 最后5秒！坚持就是胜利！';
+                    }
+                }, 1000);
+
+                starTimer = setInterval(() => {
+                    if (gameActive && timeLeft > 0) {
+                        spawnStar();
+                        if (Math.random() < 0.4 && stars.length < 15) spawnStar();
+                    }
+                }, 800);
+
+                for (let i = 0; i < 4; i++) spawnStar();
+                startAnimationLoop();
+            }
+
+            function endGame() {
+                if (!gameActive) return;
+                gameActive = false;
+                startBtn.disabled = false;
+                if (gameInterval) clearInterval(gameInterval);
+                if (starTimer) clearInterval(starTimer);
+                gameInterval = null; starTimer = null;
+
+                let evalTitle = '', quote = '';
+                if (score >= 18) {
+                    evalTitle = '长征英雄 ★★★★★';
+                    quote = '“红军不怕远征难，万水千山只等闲。” 你以非凡的毅力走完了长征路！';
+                } else if (score >= 12) {
+                    evalTitle = '优秀战士 ★★★★';
+                    quote = '“五岭逶迤腾细浪，乌蒙磅礴走泥丸。” 你展现了顽强的长征精神！';
+                } else if (score >= 6) {
+                    evalTitle = '坚韧行者 ★★★';
+                    quote = '“金沙水拍云崖暖，大渡桥横铁索寒。” 继续前进，胜利就在前方！';
+                } else {
+                    evalTitle = '希望之星 ★★';
+                    quote = '“更喜岷山千里雪，三军过后尽开颜。” 每一次尝试都是新的开始！';
+                }
+
+                posterScore.textContent = score;
+                posterEval.textContent = evalTitle;
+                posterQuote.textContent = quote;
+
+                hasAnswered = false;
+                feedbackText.textContent = '';
+                congratsArea.classList.remove('show');
+                questionSection.style.display = 'block';
+                modalCloseBtn.textContent = '下一步';
+                modalCloseBtn.disabled = false;
+
+                if (!questionLoaded) {
+                    questionText.textContent = '题库加载中，请稍候...';
+                    optionsContainer.innerHTML = '<div class="loading-text">加载题目中...</div>';
+                } else if (questions.length === 0) {
+                    questionText.textContent = '暂无题目，可点击下一步跳过。';
+                    optionsContainer.innerHTML = '';
+                } else {
+                    currentQuestionIndex = Math.floor(Math.random() * questions.length);
+                    const q = questions[currentQuestionIndex];
+                    
+                    let typeLabel = '';
+                    if (q.type === 'poem_fill') typeLabel = '📜 诗句填空：';
+                    else if (q.type === 'poem_match') typeLabel = '📖 诗句选择：';
+                    else if (q.type === 'history') typeLabel = '🚩 长征常识：';
+                    
+                    questionText.textContent = typeLabel + q.question;
+
+                    optionsContainer.innerHTML = '';
+                    q.options.forEach((opt, idx) => {
+                        const btn = document.createElement('button');
+                        btn.classList.add('option-btn');
+                        btn.textContent = `${String.fromCharCode(65 + idx)}. ${opt}`;
+                        btn.dataset.index = idx;
+                        btn.addEventListener('click', () => handleAnswer(idx, q, btn));
+                        optionsContainer.appendChild(btn);
+                    });
+                }
+
+                modalOverlay.classList.add('active');
+                messageBox.textContent = '点击红星收集完毕，查看你的长征勋章并回答问题！';
+            }
+
+            function handleAnswer(selectedIdx, q, clickedBtn) {
+                if (hasAnswered) return;
+                hasAnswered = true;
+                const allBtns = optionsContainer.querySelectorAll('.option-btn');
+                const isCorrect = selectedIdx === q.correct;
+                allBtns.forEach(btn => btn.disabled = true);
+
+                if (isCorrect) {
+                    clickedBtn.classList.add('correct');
+                    feedbackText.textContent = '✅ 回答正确！' + q.explanation;
+                } else {
+                    clickedBtn.classList.add('wrong');
+                    allBtns[q.correct].classList.add('correct');
+                    feedbackText.textContent = '❌ 回答错误。正确答案是：' + q.options[q.correct] + '。' + q.explanation;
+                }
+
+                modalCloseBtn.textContent = '下一步';
+                modalCloseBtn.disabled = false;
+            }
+
+            function closeModal() {
+                questionSection.style.display = 'none';
+                congratsArea.classList.add('show');
+                modalCloseBtn.textContent = '完成';
+                modalCloseBtn.onclick = function() {
+                    modalOverlay.classList.remove('active');
+                    messageBox.textContent = '长征精神永存！点击「重新出发」再来一次。';
+                    resetGameData();
+                    startAnimationLoop();
+                    modalCloseBtn.onclick = null;
+                    modalCloseBtn.removeEventListener('click', closeModal);
+                    modalCloseBtn.addEventListener('click', closeModal);
+                };
+            }
+
+            function resetAndStop() {
+                if (modalOverlay.classList.contains('active')) modalOverlay.classList.remove('active');
+                resetGameData();
+                startAnimationLoop();
+                modalCloseBtn.onclick = null;
+                modalCloseBtn.removeEventListener('click', closeModal);
+                modalCloseBtn.addEventListener('click', closeModal);
+                modalCloseBtn.textContent = '下一步';
+                modalCloseBtn.disabled = false;
+            }
+
+            async function init() {
+                await loadQuestions();
+                resetGameData();
+                drawBackground();
+                drawStars();
+                startAnimationLoop();
+                canvas.addEventListener('click', handleCanvasClick);
+                startBtn.addEventListener('click', startGame);
+                resetBtn.addEventListener('click', resetAndStop);
+                modalCloseBtn.addEventListener('click', closeModal);
+                window.addEventListener('keydown', (e) => {
+                    if (e.code === 'Space' && !gameActive && !startBtn.disabled && !modalOverlay.classList.contains('active')) {
+                        e.preventDefault();
+                        startGame();
+                    }
+                });
+            }
+
+            init();
+
+            window.addEventListener('beforeunload', () => {
+                if (gameInterval) clearInterval(gameInterval);
+                if (starTimer) clearInterval(starTimer);
+                if (animationFrame) cancelAnimationFrame(animationFrame);
+            });
+        })();
+    </script>
+</body>
+</html>
