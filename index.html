@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>长征·红星之路 | 同学集结令</title>
+    <title>长征·红星之路 | 双游戏入口</title>
     <style>
         * {
             margin: 0;
@@ -47,10 +47,85 @@
             text-shadow: 0 0 10px #ffb347, 0 0 20px #ff4d4d;
             line-height: 1;
             filter: drop-shadow(0 4px 2px rgba(0, 0, 0, 0.5));
-            letter-spacing: 0;
             background: #e6d7ba;
             padding: 0 12px;
             border-radius: 50%;
+        }
+
+        /* 首页双入口 */
+        .home-view {
+            text-align: center;
+        }
+        .home-title {
+            font-size: 2rem;
+            font-weight: 900;
+            color: #b22222;
+            letter-spacing: 6px;
+            text-shadow: 3px 3px 0 #e6c87a, 0 0 20px #ffb347;
+            margin-bottom: 8px;
+            font-family: 'KaiTi', '华文楷体', cursive;
+        }
+        .home-sub {
+            font-size: 1rem;
+            color: #5a4a2a;
+            font-weight: 600;
+            margin-bottom: 28px;
+            letter-spacing: 2px;
+        }
+        .entry-panel {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 24px;
+            margin-bottom: 20px;
+        }
+        .entry-card {
+            background: #2e3f2b;
+            border-radius: 32px;
+            padding: 24px 20px 28px;
+            width: 260px;
+            border: 3px solid #b99b5e;
+            box-shadow: 0 10px 0 #1d2a1a, 0 12px 24px rgba(0,0,0,0.5);
+            cursor: pointer;
+            transition: transform 0.15s, box-shadow 0.15s;
+            color: #f9eec1;
+        }
+        .entry-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 14px 0 #1d2a1a, 0 16px 28px rgba(0,0,0,0.5);
+        }
+        .entry-card:active {
+            transform: translateY(6px);
+            box-shadow: 0 4px 0 #1d2a1a, 0 8px 16px rgba(0,0,0,0.5);
+        }
+        .entry-icon {
+            font-size: 3rem;
+            margin-bottom: 10px;
+            filter: drop-shadow(0 4px 6px black);
+        }
+        .entry-name {
+            font-size: 1.4rem;
+            font-weight: 800;
+            color: #ffd966;
+            margin-bottom: 8px;
+            text-shadow: 0 2px 3px black;
+        }
+        .entry-desc {
+            font-size: 0.9rem;
+            color: #d9c8a9;
+            line-height: 1.5;
+            font-weight: 500;
+        }
+
+        /* 游戏内视图 */
+        .game-view {
+            display: none;
+        }
+        .game-view.active {
+            display: block;
+        }
+        .home-view.hidden {
+            display: none;
         }
 
         .header {
@@ -69,7 +144,7 @@
             gap: 10px;
         }
 
-        .score-box, .timer-box {
+        .score-box, .timer-box, .hp-box {
             background: #1f2b1d;
             padding: 6px 22px;
             border-radius: 40px;
@@ -83,7 +158,7 @@
             border: 1px solid #dbb45c;
         }
 
-        .score-box span, .timer-box span {
+        .score-box span, .timer-box span, .hp-box span {
             color: #ffd966;
             font-size: 2rem;
             min-width: 3rem;
@@ -110,16 +185,12 @@
             transition: filter 0.1s;
         }
 
-        canvas:active {
-            filter: brightness(0.95);
-        }
-
         .message-area {
             background: #2b3827;
             border-radius: 36px;
             padding: 14px 26px;
             text-align: center;
-            font-size: 1.3rem;
+            font-size: 1.2rem;
             font-weight: 600;
             color: #ffeab0;
             min-height: 72px;
@@ -140,16 +211,16 @@
             display: flex;
             justify-content: center;
             flex-wrap: wrap;
-            gap: 18px;
+            gap: 14px;
         }
 
         .btn {
             background: #c49b3f;
             border: none;
             border-radius: 60px;
-            font-size: 1.4rem;
+            font-size: 1.2rem;
             font-weight: bold;
-            padding: 14px 40px;
+            padding: 12px 30px;
             color: #1e2a12;
             letter-spacing: 2px;
             box-shadow: 0 9px 0 #7a5c24, 0 8px 16px rgba(0, 0, 0, 0.4);
@@ -190,6 +261,11 @@
             box-shadow: 0 3px 0 #7a1f1f, 0 8px 16px rgba(0, 0, 0, 0.4);
         }
 
+        .btn-small {
+            font-size: 0.95rem;
+            padding: 10px 20px;
+        }
+
         .hint {
             font-size: 0.85rem;
             color: #3f4d36;
@@ -199,6 +275,25 @@
             letter-spacing: 0.5px;
         }
 
+        .back-btn {
+            background: #6b7a5e;
+            box-shadow: 0 6px 0 #3e4a35;
+            color: #f9eec1;
+            font-size: 1rem;
+            padding: 8px 20px;
+            border-radius: 40px;
+            border: 2px solid #b99b5e;
+            cursor: pointer;
+            font-weight: bold;
+            font-family: inherit;
+            transition: 0.08s;
+        }
+        .back-btn:active {
+            transform: translateY(4px);
+            box-shadow: 0 2px 0 #3e4a35;
+        }
+
+        /* 弹窗 */
         .modal-overlay {
             position: fixed;
             top: 0;
@@ -338,9 +433,6 @@
             transition: 0.1s;
             box-shadow: 0 5px 0 #1f2b1d;
             font-family: inherit;
-            display: flex;
-            align-items: center;
-            gap: 10px;
         }
 
         .option-btn:hover {
@@ -432,66 +524,114 @@
             padding: 10px;
         }
 
+        /* 过草地游戏提示 */
+        .grass-controls {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            margin-top: 6px;
+            flex-wrap: wrap;
+        }
+        .grass-controls .btn {
+            font-size: 1.3rem;
+            padding: 12px 26px;
+        }
+        .attack-hint {
+            color: #c93c3c;
+            font-weight: 700;
+            font-size: 0.95rem;
+            text-align: center;
+            margin-top: 6px;
+        }
+
         @media (max-width: 550px) {
-            .game-container {
-                padding: 16px 12px 22px;
-            }
-            .score-box, .timer-box {
-                font-size: 1rem;
-                padding: 4px 12px;
-            }
-            .score-box span, .timer-box span {
-                font-size: 1.4rem;
-                min-width: 2rem;
-            }
-            .btn {
-                font-size: 1.1rem;
-                padding: 12px 20px;
-            }
-            .message-area {
-                font-size: 1rem;
-                min-height: 64px;
-                padding: 10px 12px;
-            }
-            .poster-title {
-                font-size: 1.5rem;
-            }
-            .poster-score {
-                font-size: 2.4rem;
-            }
-            .option-btn {
-                font-size: 1rem;
-                padding: 12px 14px;
-            }
+            .game-container { padding: 16px 12px 22px; }
+            .score-box, .timer-box, .hp-box { font-size: 0.9rem; padding: 4px 10px; }
+            .score-box span, .timer-box span, .hp-box span { font-size: 1.2rem; min-width: 2rem; }
+            .btn { font-size: 1rem; padding: 10px 18px; }
+            .entry-card { width: 100%; max-width: 300px; }
+            .home-title { font-size: 1.5rem; }
+            .poster-title { font-size: 1.5rem; }
+            .poster-score { font-size: 2.4rem; }
+            .option-btn { font-size: 1rem; padding: 12px 14px; }
+            .grass-controls .btn { font-size: 1.1rem; padding: 10px 18px; }
         }
     </style>
 </head>
 <body>
     <div class="game-container">
-        <div class="header">
-            <div class="score-box">🌟 红星 <span id="scoreDisplay">0</span></div>
-            <div class="timer-box">⏳ 时间 <span id="timerDisplay">30</span></div>
+        <!-- 首页双入口 -->
+        <div class="home-view" id="homeView">
+            <div class="home-title">长征·红星之路</div>
+            <div class="home-sub">—— 选择你的长征任务 ——</div>
+            <div class="entry-panel">
+                <div class="entry-card" id="entryStar">
+                    <div class="entry-icon">⭐</div>
+                    <div class="entry-name">红星收集</div>
+                    <div class="entry-desc">30秒内点击闪烁的红星，收集长征精神，答题赢勋章。</div>
+                </div>
+                <div class="entry-card" id="entryGrass">
+                    <div class="entry-icon">🌿</div>
+                    <div class="entry-name">过草地</div>
+                    <div class="entry-desc">控制小红军穿越草地，用石子击退敌人，坚持到终点。</div>
+                </div>
+            </div>
+            <div class="hint">点击卡片进入对应游戏</div>
         </div>
 
-        <div class="canvas-wrapper">
-            <canvas id="gameCanvas" width="720" height="400"></canvas>
+        <!-- 游戏1：红星收集 -->
+        <div class="game-view" id="starGameView">
+            <div class="header">
+                <div class="score-box">🌟 红星 <span id="scoreDisplay">0</span></div>
+                <div class="timer-box">⏳ 时间 <span id="timerDisplay">30</span></div>
+                <button class="back-btn" id="backFromStar">← 返回</button>
+            </div>
+            <div class="canvas-wrapper">
+                <canvas id="starCanvas" width="720" height="400"></canvas>
+            </div>
+            <div class="message-area" id="starMessage">
+                点击开始，踏上长征路！
+            </div>
+            <div class="button-panel">
+                <button class="btn btn-red" id="startStarBtn">🚩 开始长征</button>
+                <button class="btn" id="resetStarBtn">⛰️ 重新出发</button>
+            </div>
+            <div class="hint">⭐ 点击闪烁的红星，收集长征精神！限时30秒！</div>
         </div>
 
-        <div class="message-area" id="messageBox">
-            点击开始，踏上长征路！
+        <!-- 游戏2：过草地 -->
+        <div class="game-view" id="grassGameView">
+            <div class="header">
+                <div class="hp-box">❤️ 体力 <span id="hpDisplay">5</span></div>
+                <div class="score-box">🪨 石子 <span id="ammoDisplay">8</span></div>
+                <div class="timer-box">⏳ 时间 <span id="grassTimerDisplay">30</span></div>
+                <button class="back-btn" id="backFromGrass">← 返回</button>
+            </div>
+            <div class="canvas-wrapper">
+                <canvas id="grassCanvas" width="720" height="400"></canvas>
+            </div>
+            <div class="message-area" id="grassMessage">
+                点击开始，红军过草地！用石子击退敌人，坚持30秒。
+            </div>
+            <div class="button-panel grass-controls">
+                <button class="btn" id="moveLeftBtn">← 左移</button>
+                <button class="btn btn-red" id="attackBtn">🪨 扔石子</button>
+                <button class="btn" id="moveRightBtn">右移 →</button>
+            </div>
+            <div class="grass-controls" style="margin-top:10px;">
+                <button class="btn btn-red" id="startGrassBtn">🌿 开始过草地</button>
+                <button class="btn" id="resetGrassBtn">🔄 重新开始</button>
+            </div>
+            <div class="attack-hint">石子有限，省着用！敌人靠近会扣体力。</div>
+            <div class="hint">键盘 ← → 移动，空格扔石子</div>
         </div>
-
-        <div class="button-panel">
-            <button class="btn btn-red" id="startBtn" autofocus>🚩 开始长征</button>
-            <button class="btn" id="resetBtn">⛰️ 重新出发</button>
-        </div>
-        <div class="hint">⭐ 点击闪烁的红星，收集长征精神！限时30秒！</div>
     </div>
 
+    <!-- 弹窗（两个游戏共用） -->
     <div class="modal-overlay" id="modalOverlay">
         <div class="modal-content">
             <div class="poster-area" id="posterArea">
-                <div class="poster-title">★ 长征红星勋章 ★</div>
+                <div class="poster-title">★ 长征勋章 ★</div>
                 <div class="poster-sub">—— 献给新时代的接班人 ——</div>
                 <div class="poster-score" id="posterScore">0</div>
                 <div class="poster-eval" id="posterEval">长征精神传承者</div>
@@ -514,41 +654,9 @@
 
     <script>
         (function() {
-            const canvas = document.getElementById('gameCanvas');
-            const ctx = canvas.getContext('2d');
-            const scoreSpan = document.getElementById('scoreDisplay');
-            const timerSpan = document.getElementById('timerDisplay');
-            const messageBox = document.getElementById('messageBox');
-            const startBtn = document.getElementById('startBtn');
-            const resetBtn = document.getElementById('resetBtn');
-
-            const modalOverlay = document.getElementById('modalOverlay');
-            const posterScore = document.getElementById('posterScore');
-            const posterEval = document.getElementById('posterEval');
-            const posterQuote = document.getElementById('posterQuote');
-            const questionText = document.getElementById('questionText');
-            const optionsContainer = document.getElementById('optionsContainer');
-            const feedbackText = document.getElementById('feedbackText');
-            const modalCloseBtn = document.getElementById('modalCloseBtn');
-            const congratsArea = document.getElementById('congratsArea');
-            const questionSection = document.getElementById('questionSection');
-
-            const CW = 720;
-            const CH = 400;
-
-            let score = 0;
-            let timeLeft = 30;
-            let gameActive = false;
-            let gameInterval = null;
-            let starTimer = null;
-            let stars = [];
-            let animationFrame = null;
-
+            // ==================== 全局状态 ====================
             let questions = [];
-            let currentQuestionIndex = 0;
-            let hasAnswered = false;
             let questionLoaded = false;
-
             const defaultQuestions = [
                 {
                     type: "history",
@@ -580,67 +688,118 @@
                 }
             }
 
-            function drawBackground() {
-                const grad = ctx.createLinearGradient(0, 0, 0, CH);
+            // ==================== 视图切换 ====================
+            const homeView = document.getElementById('homeView');
+            const starGameView = document.getElementById('starGameView');
+            const grassGameView = document.getElementById('grassGameView');
+
+            function showHome() {
+                homeView.classList.remove('hidden');
+                starGameView.classList.remove('active');
+                grassGameView.classList.remove('active');
+                // 停止两个游戏
+                stopStarGame();
+                stopGrassGame();
+            }
+            function showStarGame() {
+                homeView.classList.add('hidden');
+                starGameView.classList.add('active');
+                grassGameView.classList.remove('active');
+                stopGrassGame();
+                resetStarGame();
+            }
+            function showGrassGame() {
+                homeView.classList.add('hidden');
+                grassGameView.classList.add('active');
+                starGameView.classList.remove('active');
+                stopStarGame();
+                resetGrassGame();
+            }
+
+            document.getElementById('entryStar').addEventListener('click', showStarGame);
+            document.getElementById('entryGrass').addEventListener('click', showGrassGame);
+            document.getElementById('backFromStar').addEventListener('click', showHome);
+            document.getElementById('backFromGrass').addEventListener('click', showHome);
+
+            // ==================== 游戏1：红星收集 ====================
+            const starCanvas = document.getElementById('starCanvas');
+            const starCtx = starCanvas.getContext('2d');
+            const scoreSpan = document.getElementById('scoreDisplay');
+            const timerSpan = document.getElementById('timerDisplay');
+            const starMessage = document.getElementById('starMessage');
+            const startStarBtn = document.getElementById('startStarBtn');
+            const resetStarBtn = document.getElementById('resetStarBtn');
+
+            const CW = 720, CH = 400;
+            let starScore = 0;
+            let starTimeLeft = 30;
+            let starGameActive = false;
+            let starGameInterval = null;
+            let starSpawnTimer = null;
+            let stars = [];
+            let starAnimationId = null;
+
+            function drawStarBackground() {
+                const grad = starCtx.createLinearGradient(0, 0, 0, CH);
                 grad.addColorStop(0, '#93b87a');
                 grad.addColorStop(0.6, '#6f9160');
                 grad.addColorStop(1, '#4a5e3a');
-                ctx.fillStyle = grad;
-                ctx.fillRect(0, 0, CW, CH);
+                starCtx.fillStyle = grad;
+                starCtx.fillRect(0, 0, CW, CH);
 
-                ctx.fillStyle = '#b0c4b0';
-                ctx.beginPath();
-                ctx.moveTo(0, 280);
-                ctx.lineTo(120, 150);
-                ctx.lineTo(240, 220);
-                ctx.lineTo(360, 100);
-                ctx.lineTo(480, 190);
-                ctx.lineTo(600, 80);
-                ctx.lineTo(720, 160);
-                ctx.lineTo(720, 300);
-                ctx.lineTo(0, 300);
-                ctx.fillStyle = '#9bb08b';
-                ctx.fill();
+                starCtx.fillStyle = '#b0c4b0';
+                starCtx.beginPath();
+                starCtx.moveTo(0, 280);
+                starCtx.lineTo(120, 150);
+                starCtx.lineTo(240, 220);
+                starCtx.lineTo(360, 100);
+                starCtx.lineTo(480, 190);
+                starCtx.lineTo(600, 80);
+                starCtx.lineTo(720, 160);
+                starCtx.lineTo(720, 300);
+                starCtx.lineTo(0, 300);
+                starCtx.fillStyle = '#9bb08b';
+                starCtx.fill();
 
-                ctx.fillStyle = '#7e9a6b';
-                ctx.beginPath();
-                ctx.moveTo(0, 300);
-                ctx.lineTo(0, 280);
-                ctx.lineTo(120, 150);
-                ctx.lineTo(240, 220);
-                ctx.lineTo(360, 100);
-                ctx.lineTo(480, 190);
-                ctx.lineTo(600, 80);
-                ctx.lineTo(720, 160);
-                ctx.lineTo(720, 300);
-                ctx.fill();
+                starCtx.fillStyle = '#7e9a6b';
+                starCtx.beginPath();
+                starCtx.moveTo(0, 300);
+                starCtx.lineTo(0, 280);
+                starCtx.lineTo(120, 150);
+                starCtx.lineTo(240, 220);
+                starCtx.lineTo(360, 100);
+                starCtx.lineTo(480, 190);
+                starCtx.lineTo(600, 80);
+                starCtx.lineTo(720, 160);
+                starCtx.lineTo(720, 300);
+                starCtx.fill();
 
                 for (let i = 0; i < 30; i++) {
                     const x = (i * 45 + 12) % CW;
                     const y = 300 + (i * 7) % 80;
-                    ctx.beginPath();
-                    ctx.ellipse(x, y, 8, 4, 0, 0, Math.PI * 2);
-                    ctx.fillStyle = '#4f6b3e';
-                    ctx.fill();
+                    starCtx.beginPath();
+                    starCtx.ellipse(x, y, 8, 4, 0, 0, Math.PI * 2);
+                    starCtx.fillStyle = '#4f6b3e';
+                    starCtx.fill();
                 }
 
-                ctx.font = 'bold 32px "Segoe UI", "KaiTi", sans-serif';
-                ctx.fillStyle = '#d43d3d';
-                ctx.shadowColor = '#f0c060';
-                ctx.shadowBlur = 10;
-                ctx.fillText('★', 40, 80);
-                ctx.shadowBlur = 0;
-                ctx.shadowColor = 'transparent';
+                starCtx.font = 'bold 32px "Segoe UI", "KaiTi", sans-serif';
+                starCtx.fillStyle = '#d43d3d';
+                starCtx.shadowColor = '#f0c060';
+                starCtx.shadowBlur = 10;
+                starCtx.fillText('★', 40, 80);
+                starCtx.shadowBlur = 0;
+                starCtx.shadowColor = 'transparent';
 
-                ctx.font = '18px "Segoe UI"';
-                ctx.fillStyle = '#ffd966';
-                ctx.fillText('★', 600, 60);
-                ctx.fillText('★', 660, 110);
-                ctx.fillStyle = '#e6c87a';
-                ctx.fillText('★', 100, 330);
+                starCtx.font = '18px "Segoe UI"';
+                starCtx.fillStyle = '#ffd966';
+                starCtx.fillText('★', 600, 60);
+                starCtx.fillText('★', 660, 110);
+                starCtx.fillStyle = '#e6c87a';
+                starCtx.fillText('★', 100, 330);
             }
 
-            function drawStar(ctx, cx, cy, spikes, outerR, innerR) {
+            function drawStarShape(ctx, cx, cy, spikes, outerR, innerR) {
                 let rot = Math.PI / 2 * 3;
                 const step = Math.PI / spikes;
                 ctx.beginPath();
@@ -675,17 +834,17 @@
                 for (let star of stars) {
                     if (star.collected) continue;
                     const opacity = Math.min(1, star.life / 0.5);
-                    ctx.save();
-                    ctx.globalAlpha = opacity;
-                    drawStar(ctx, star.x, star.y, 5, star.radius, star.radius * 0.5);
-                    ctx.restore();
+                    starCtx.save();
+                    starCtx.globalAlpha = opacity;
+                    drawStarShape(starCtx, star.x, star.y, 5, star.radius, star.radius * 0.5);
+                    starCtx.restore();
                 }
             }
 
-            function updateScoreDisplay() { scoreSpan.textContent = score; }
-            function updateTimerDisplay() { timerSpan.textContent = timeLeft; }
+            function updateStarScore() { scoreSpan.textContent = starScore; }
+            function updateStarTimer() { timerSpan.textContent = starTimeLeft; }
 
-            function updateStars(deltaSec) {
+            function updateStarsLife(deltaSec) {
                 for (let i = stars.length - 1; i >= 0; i--) {
                     const star = stars[i];
                     if (!star.collected) {
@@ -698,7 +857,7 @@
             }
 
             function spawnStar() {
-                if (!gameActive) return;
+                if (!starGameActive) return;
                 const radius = 16 + Math.random() * 10;
                 const x = Math.random() * (CW - 2 * radius) + radius;
                 const y = Math.random() * (CH - 2 * radius - 40) + radius + 30;
@@ -706,14 +865,14 @@
                 stars.push({ x, y, radius, life, maxLife: life, collected: false });
             }
 
-            function handleCanvasClick(e) {
-                if (!gameActive) {
-                    messageBox.textContent = '请先点击「开始长征」！';
+            function handleStarCanvasClick(e) {
+                if (!starGameActive) {
+                    starMessage.textContent = '请先点击「开始长征」！';
                     return;
                 }
-                const rect = canvas.getBoundingClientRect();
-                const scaleX = canvas.width / rect.width;
-                const scaleY = canvas.height / rect.height;
+                const rect = starCanvas.getBoundingClientRect();
+                const scaleX = starCanvas.width / rect.width;
+                const scaleY = starCanvas.height / rect.height;
                 const mouseX = (e.clientX - rect.left) * scaleX;
                 const mouseY = (e.clientY - rect.top) * scaleY;
                 for (let i = stars.length - 1; i >= 0; i--) {
@@ -724,106 +883,594 @@
                     const dist = Math.sqrt(dx * dx + dy * dy);
                     if (dist <= star.radius + 8) {
                         star.collected = true;
-                        score++;
-                        updateScoreDisplay();
+                        starScore++;
+                        updateStarScore();
                         const encouragements = [
                             '⭐ 红军不怕远征难！', '🔥 星星之火，可以燎原！', '🌟 长征精神，永放光芒！',
                             '💪 四渡赤水出奇兵！', '🏔️ 翻越夹金山！', '🌾 过草地，不拿群众一针一线！',
                             '🎯 胜利会师！', '❤️ 传承红色基因！'
                         ];
-                        messageBox.textContent = encouragements[Math.floor(Math.random() * encouragements.length)];
+                        starMessage.textContent = encouragements[Math.floor(Math.random() * encouragements.length)];
                         stars.splice(i, 1);
                         break;
                     }
                 }
             }
 
-            let lastTimestamp = 0;
-            function animate(timestamp) {
-                if (!lastTimestamp) lastTimestamp = timestamp;
-                const deltaSec = Math.min(0.05, (timestamp - lastTimestamp) / 1000);
-                lastTimestamp = timestamp;
-                if (gameActive) updateStars(deltaSec);
-                drawBackground();
+            let starLastTs = 0;
+            function starAnimate(ts) {
+                if (!starLastTs) starLastTs = ts;
+                const deltaSec = Math.min(0.05, (ts - starLastTs) / 1000);
+                starLastTs = ts;
+                if (starGameActive) updateStarsLife(deltaSec);
+                drawStarBackground();
                 drawStars();
-                animationFrame = requestAnimationFrame(animate);
+                starAnimationId = requestAnimationFrame(starAnimate);
             }
 
-            function startAnimationLoop() {
-                if (!animationFrame) {
-                    lastTimestamp = 0;
-                    animationFrame = requestAnimationFrame(animate);
+            function startStarAnimation() {
+                if (!starAnimationId) {
+                    starLastTs = 0;
+                    starAnimationId = requestAnimationFrame(starAnimate);
+                }
+            }
+            function stopStarAnimation() {
+                if (starAnimationId) {
+                    cancelAnimationFrame(starAnimationId);
+                    starAnimationId = null;
                 }
             }
 
-            function resetGameData() {
-                if (gameInterval) clearInterval(gameInterval);
-                if (starTimer) clearInterval(starTimer);
-                if (animationFrame) cancelAnimationFrame(animationFrame);
-                gameInterval = null; starTimer = null; animationFrame = null;
-                gameActive = false;
-                score = 0; timeLeft = 30; stars = []; hasAnswered = false;
-                updateScoreDisplay(); updateTimerDisplay();
-                startBtn.disabled = false;
-                messageBox.textContent = '点击开始，踏上长征路！';
-                drawBackground(); drawStars();
+            function resetStarGame() {
+                if (starGameInterval) clearInterval(starGameInterval);
+                if (starSpawnTimer) clearInterval(starSpawnTimer);
+                starGameInterval = null; starSpawnTimer = null;
+                starGameActive = false;
+                starScore = 0; starTimeLeft = 30; stars = [];
+                updateStarScore(); updateStarTimer();
+                startStarBtn.disabled = false;
+                starMessage.textContent = '点击开始，踏上长征路！';
+                drawStarBackground();
+                drawStars();
+                startStarAnimation();
             }
 
-            function startGame() {
-                if (gameActive) return;
-                resetGameData();
-                gameActive = true;
-                startBtn.disabled = true;
-                messageBox.textContent = '长征开始！点击红星，收集信仰！';
-                score = 0; timeLeft = 30;
-                updateScoreDisplay(); updateTimerDisplay();
+            function stopStarGame() {
+                if (starGameInterval) clearInterval(starGameInterval);
+                if (starSpawnTimer) clearInterval(starSpawnTimer);
+                starGameInterval = null; starSpawnTimer = null;
+                starGameActive = false;
+            }
+
+            function startStarGame() {
+                if (starGameActive) return;
+                resetStarGame();
+                starGameActive = true;
+                startStarBtn.disabled = true;
+                starMessage.textContent = '长征开始！点击红星，收集信仰！';
+                starScore = 0; starTimeLeft = 30;
+                updateStarScore(); updateStarTimer();
                 stars = [];
 
-                gameInterval = setInterval(() => {
-                    if (!gameActive) return;
-                    timeLeft -= 1;
-                    updateTimerDisplay();
-                    if (timeLeft <= 0) {
-                        timeLeft = 0; updateTimerDisplay(); endGame();
-                    } else if (timeLeft === 5) {
-                        messageBox.textContent = '⏰ 最后5秒！坚持就是胜利！';
+                starGameInterval = setInterval(() => {
+                    if (!starGameActive) return;
+                    starTimeLeft -= 1;
+                    updateStarTimer();
+                    if (starTimeLeft <= 0) {
+                        starTimeLeft = 0; updateStarTimer(); endStarGame();
+                    } else if (starTimeLeft === 5) {
+                        starMessage.textContent = '⏰ 最后5秒！坚持就是胜利！';
                     }
                 }, 1000);
 
-                starTimer = setInterval(() => {
-                    if (gameActive && timeLeft > 0) {
+                starSpawnTimer = setInterval(() => {
+                    if (starGameActive && starTimeLeft > 0) {
                         spawnStar();
                         if (Math.random() < 0.4 && stars.length < 15) spawnStar();
                     }
                 }, 800);
 
                 for (let i = 0; i < 4; i++) spawnStar();
-                startAnimationLoop();
+                startStarAnimation();
             }
 
-            function endGame() {
-                if (!gameActive) return;
-                gameActive = false;
-                startBtn.disabled = false;
-                if (gameInterval) clearInterval(gameInterval);
-                if (starTimer) clearInterval(starTimer);
-                gameInterval = null; starTimer = null;
+            function endStarGame() {
+                if (!starGameActive) return;
+                starGameActive = false;
+                startStarBtn.disabled = false;
+                if (starGameInterval) clearInterval(starGameInterval);
+                if (starSpawnTimer) clearInterval(starSpawnTimer);
+                starGameInterval = null; starSpawnTimer = null;
 
                 let evalTitle = '', quote = '';
-                if (score >= 18) {
+                if (starScore >= 18) {
                     evalTitle = '长征英雄 ★★★★★';
                     quote = '“红军不怕远征难，万水千山只等闲。” 你以非凡的毅力走完了长征路！';
-                } else if (score >= 12) {
+                } else if (starScore >= 12) {
                     evalTitle = '优秀战士 ★★★★';
                     quote = '“五岭逶迤腾细浪，乌蒙磅礴走泥丸。” 你展现了顽强的长征精神！';
-                } else if (score >= 6) {
+                } else if (starScore >= 6) {
                     evalTitle = '坚韧行者 ★★★';
                     quote = '“金沙水拍云崖暖，大渡桥横铁索寒。” 继续前进，胜利就在前方！';
                 } else {
                     evalTitle = '希望之星 ★★';
                     quote = '“更喜岷山千里雪，三军过后尽开颜。” 每一次尝试都是新的开始！';
                 }
+                showResultModal(starScore, evalTitle, quote);
+            }
 
+            starCanvas.addEventListener('click', handleStarCanvasClick);
+            startStarBtn.addEventListener('click', startStarGame);
+            resetStarBtn.addEventListener('click', resetStarGame);
+
+            // ==================== 游戏2：过草地 ====================
+            const grassCanvas = document.getElementById('grassCanvas');
+            const grassCtx = grassCanvas.getContext('2d');
+            const hpDisplay = document.getElementById('hpDisplay');
+            const ammoDisplay = document.getElementById('ammoDisplay');
+            const grassTimerDisplay = document.getElementById('grassTimerDisplay');
+            const grassMessage = document.getElementById('grassMessage');
+            const startGrassBtn = document.getElementById('startGrassBtn');
+            const resetGrassBtn = document.getElementById('resetGrassBtn');
+            const moveLeftBtn = document.getElementById('moveLeftBtn');
+            const moveRightBtn = document.getElementById('moveRightBtn');
+            const attackBtn = document.getElementById('attackBtn');
+
+            // 过草地状态
+            let player = { x: 360, y: 330, width: 44, height: 44 };
+            let enemies = [];
+            let bullets = [];
+            let hp = 5;
+            let ammo = 8;
+            let grassTimeLeft = 30;
+            let grassActive = false;
+            let grassInterval = null;
+            let enemySpawnTimer = null;
+            let grassAnimationId = null;
+            let playerInvincible = 0; // 受伤后的无敌帧时间(秒)
+            let moveDirection = 0; // -1左 1右 0停止
+            let keys = {};
+
+            const GRASS_CW = 720, GRASS_CH = 400;
+            const PLAYER_SPEED = 260; // 像素/秒
+            const BULLET_SPEED = 520;
+            const ENEMY_SPEED = 45;
+
+            function resetGrassGame() {
+                if (grassInterval) clearInterval(grassInterval);
+                if (enemySpawnTimer) clearInterval(enemySpawnTimer);
+                grassInterval = null; enemySpawnTimer = null;
+                grassActive = false;
+
+                player.x = 360;
+                player.y = 330;
+                enemies = [];
+                bullets = [];
+                hp = 5;
+                ammo = 8;
+                grassTimeLeft = 30;
+                playerInvincible = 0;
+                moveDirection = 0;
+                keys = {};
+                updateGrassHUD();
+                grassMessage.textContent = '点击开始，红军过草地！用石子击退敌人，坚持30秒。';
+                startGrassBtn.disabled = false;
+                drawGrassScene();
+                startGrassAnimation();
+            }
+
+            function stopGrassGame() {
+                if (grassInterval) clearInterval(grassInterval);
+                if (enemySpawnTimer) clearInterval(enemySpawnTimer);
+                grassInterval = null; enemySpawnTimer = null;
+                grassActive = false;
+            }
+
+            function updateGrassHUD() {
+                hpDisplay.textContent = hp;
+                ammoDisplay.textContent = ammo;
+                grassTimerDisplay.textContent = grassTimeLeft;
+            }
+
+            function startGrassGame() {
+                if (grassActive) return;
+                resetGrassGame();
+                grassActive = true;
+                startGrassBtn.disabled = true;
+                grassMessage.textContent = '红军过草地！小心敌人，石子有限！';
+
+                grassInterval = setInterval(() => {
+                    if (!grassActive) return;
+                    grassTimeLeft -= 1;
+                    updateGrassHUD();
+                    if (grassTimeLeft <= 0) {
+                        grassTimeLeft = 0; updateGrassHUD(); endGrassGame(true);
+                    }
+                }, 1000);
+
+                enemySpawnTimer = setInterval(() => {
+                    if (!grassActive) return;
+                    if (enemies.length < 6 && Math.random() < 0.7) {
+                        spawnEnemy();
+                    }
+                }, 900);
+
+                // 初始生成1个敌人
+                spawnEnemy();
+            }
+
+            function spawnEnemy() {
+                const radius = 18;
+                const x = Math.random() * (GRASS_CW - 2 * radius) + radius;
+                enemies.push({
+                    x: x,
+                    y: -radius, // 从顶边出现
+                    radius: radius,
+                    speed: ENEMY_SPEED + Math.random() * 30
+                });
+            }
+
+            function shootBullet() {
+                if (!grassActive) return;
+                if (ammo <= 0) {
+                    grassMessage.textContent = '石子用完了！只能躲避了！';
+                    return;
+                }
+                ammo--;
+                updateGrassHUD();
+                bullets.push({
+                    x: player.x,
+                    y: player.y - 18,
+                    radius: 6,
+                    vy: -BULLET_SPEED
+                });
+                grassMessage.textContent = '扔出一颗石子！';
+            }
+
+            // 绘制过草地场景
+            function drawGrassScene() {
+                // 草地渐变
+                const grad = grassCtx.createLinearGradient(0, 0, 0, GRASS_CH);
+                grad.addColorStop(0, '#6b8c5a');
+                grad.addColorStop(0.5, '#4f6b3e');
+                grad.addColorStop(1, '#3a4f2c');
+                grassCtx.fillStyle = grad;
+                grassCtx.fillRect(0, 0, GRASS_CW, GRASS_CH);
+
+                // 草地纹理
+                for (let i = 0; i < 60; i++) {
+                    const x = (i * 37 + 13) % GRASS_CW;
+                    const y = (i * 23 + 7) % GRASS_CH;
+                    grassCtx.beginPath();
+                    grassCtx.ellipse(x, y, 6, 3, 0, 0, Math.PI * 2);
+                    grassCtx.fillStyle = '#5e7a4a';
+                    grassCtx.fill();
+                }
+
+                // 远处的山
+                grassCtx.fillStyle = '#7e9a6b';
+                grassCtx.beginPath();
+                grassCtx.moveTo(0, 180);
+                grassCtx.lineTo(100, 110);
+                grassCtx.lineTo(220, 160);
+                grassCtx.lineTo(360, 90);
+                grassCtx.lineTo(480, 150);
+                grassCtx.lineTo(600, 80);
+                grassCtx.lineTo(720, 130);
+                grassCtx.lineTo(720, 220);
+                grassCtx.lineTo(0, 220);
+                grassCtx.fill();
+
+                // 画玩家（小红军：五角星帽子+身体）
+                grassCtx.save();
+                if (playerInvincible > 0 && Math.floor(playerInvincible * 10) % 2 === 0) {
+                    grassCtx.globalAlpha = 0.5;
+                }
+                // 身体（灰色军装）
+                grassCtx.fillStyle = '#6b6b5a';
+                grassCtx.beginPath();
+                grassCtx.ellipse(player.x, player.y + 6, 16, 18, 0, 0, Math.PI * 2);
+                grassCtx.fill();
+                // 头
+                grassCtx.fillStyle = '#d9b382';
+                grassCtx.beginPath();
+                grassCtx.arc(player.x, player.y - 12, 13, 0, Math.PI * 2);
+                grassCtx.fill();
+                // 八角帽（灰绿色）
+                grassCtx.fillStyle = '#4a5a3a';
+                grassCtx.beginPath();
+                grassCtx.ellipse(player.x, player.y - 22, 18, 8, 0, 0, Math.PI * 2);
+                grassCtx.fill();
+                // 帽子上的红星
+                drawMiniStar(grassCtx, player.x, player.y - 24, 5, 7, 3, '#ff3333');
+                // 眼睛
+                grassCtx.fillStyle = '#222';
+                grassCtx.beginPath();
+                grassCtx.arc(player.x - 5, player.y - 15, 2, 0, Math.PI * 2);
+                grassCtx.arc(player.x + 5, player.y - 15, 2, 0, Math.PI * 2);
+                grassCtx.fill();
+                // 枪（简单的步枪线条，但子弹是石子，所以这里画个弹弓/手）
+                grassCtx.strokeStyle = '#5a4a2a';
+                grassCtx.lineWidth = 3;
+                grassCtx.beginPath();
+                grassCtx.moveTo(player.x + 10, player.y - 2);
+                grassCtx.lineTo(player.x + 20, player.y - 20);
+                grassCtx.stroke();
+                grassCtx.restore();
+
+                // 画敌人（黑色/深色剪影，戴钢盔）
+                for (let e of enemies) {
+                    // 身体
+                    grassCtx.fillStyle = '#2b2b2b';
+                    grassCtx.beginPath();
+                    grassCtx.ellipse(e.x, e.y + 4, 14, 16, 0, 0, Math.PI * 2);
+                    grassCtx.fill();
+                    // 头
+                    grassCtx.fillStyle = '#444';
+                    grassCtx.beginPath();
+                    grassCtx.arc(e.x, e.y - 10, 12, 0, Math.PI * 2);
+                    grassCtx.fill();
+                    // 钢盔
+                    grassCtx.fillStyle = '#1a1a1a';
+                    grassCtx.beginPath();
+                    grassCtx.ellipse(e.x, e.y - 18, 15, 7, 0, 0, Math.PI * 2);
+                    grassCtx.fill();
+                    // 眼睛红光
+                    grassCtx.fillStyle = '#ff4444';
+                    grassCtx.beginPath();
+                    grassCtx.arc(e.x - 4, e.y - 12, 2, 0, Math.PI * 2);
+                    grassCtx.arc(e.x + 4, e.y - 12, 2, 0, Math.PI * 2);
+                    grassCtx.fill();
+                }
+
+                // 画石子子弹
+                for (let b of bullets) {
+                    grassCtx.fillStyle = '#a89b7a';
+                    grassCtx.shadowColor = '#7a6b4a';
+                    grassCtx.shadowBlur = 6;
+                    grassCtx.beginPath();
+                    grassCtx.arc(b.x, b.y, b.radius, 0, Math.PI * 2);
+                    grassCtx.fill();
+                    // 高光
+                    grassCtx.fillStyle = '#cfc3a0';
+                    grassCtx.beginPath();
+                    grassCtx.arc(b.x - 2, b.y - 2, 2, 0, Math.PI * 2);
+                    grassCtx.fill();
+                    grassCtx.shadowBlur = 0;
+                }
+
+                // 画剩余弹药提示
+                grassCtx.font = '16px "Segoe UI"';
+                grassCtx.fillStyle = '#ffd966';
+                grassCtx.shadowColor = '#000';
+                grassCtx.shadowBlur = 4;
+                grassCtx.fillText('🪨 ' + ammo, 20, 30);
+                grassCtx.fillStyle = '#ff6b6b';
+                grassCtx.fillText('❤️ ' + hp, 20, 55);
+                grassCtx.shadowBlur = 0;
+            }
+
+            function drawMiniStar(ctx, cx, cy, spikes, outerR, innerR, color) {
+                let rot = Math.PI / 2 * 3;
+                const step = Math.PI / spikes;
+                ctx.beginPath();
+                for (let i = 0; i < spikes; i++) {
+                    const x1 = cx + Math.cos(rot) * outerR;
+                    const y1 = cy + Math.sin(rot) * outerR;
+                    ctx.lineTo(x1, y1);
+                    rot += step;
+                    const x2 = cx + Math.cos(rot) * innerR;
+                    const y2 = cy + Math.sin(rot) * innerR;
+                    ctx.lineTo(x2, y2);
+                    rot += step;
+                }
+                ctx.closePath();
+                ctx.fillStyle = color;
+                ctx.fill();
+            }
+
+            // 更新过草地逻辑
+            let grassLastTs = 0;
+            function updateGrass(deltaSec) {
+                // 玩家移动
+                if (moveDirection !== 0) {
+                    player.x += moveDirection * PLAYER_SPEED * deltaSec;
+                }
+                // 键盘移动
+                if (keys['ArrowLeft'] || keys['KeyA']) player.x -= PLAYER_SPEED * deltaSec;
+                if (keys['ArrowRight'] || keys['KeyD']) player.x += PLAYER_SPEED * deltaSec;
+
+                // 边界限制
+                const margin = 30;
+                if (player.x < margin) player.x = margin;
+                if (player.x > GRASS_CW - margin) player.x = GRASS_CW - margin;
+
+                // 无敌帧递减
+                if (playerInvincible > 0) {
+                    playerInvincible -= deltaSec;
+                    if (playerInvincible < 0) playerInvincible = 0;
+                }
+
+                // 更新子弹
+                for (let i = bullets.length - 1; i >= 0; i--) {
+                    const b = bullets[i];
+                    b.y += b.vy * deltaSec;
+                    if (b.y < -20) {
+                        bullets.splice(i, 1);
+                        continue;
+                    }
+                    // 碰撞检测：子弹 vs 敌人
+                    let hit = false;
+                    for (let j = enemies.length - 1; j >= 0; j--) {
+                        const e = enemies[j];
+                        const dx = b.x - e.x;
+                        const dy = b.y - e.y;
+                        const dist = Math.sqrt(dx * dx + dy * dy);
+                        if (dist < b.radius + e.radius) {
+                            enemies.splice(j, 1);
+                            hit = true;
+                            break;
+                        }
+                    }
+                    if (hit) {
+                        bullets.splice(i, 1);
+                    }
+                }
+
+                // 更新敌人
+                for (let i = enemies.length - 1; i >= 0; i--) {
+                    const e = enemies[i];
+                    e.y += e.speed * deltaSec;
+                    // 超出底部则移除（放跑敌人不扣血，但分数无加成）
+                    if (e.y > GRASS_CH + 30) {
+                        enemies.splice(i, 1);
+                        continue;
+                    }
+                    // 与玩家碰撞检测
+                    if (playerInvincible <= 0) {
+                        const dx = player.x - e.x;
+                        const dy = player.y - e.y;
+                        const dist = Math.sqrt(dx * dx + dy * dy);
+                        if (dist < 28) {
+                            hp--;
+                            updateGrassHUD();
+                            playerInvincible = 1.5; // 1.5秒无敌
+                            enemies.splice(i, 1);
+                            if (hp <= 0) {
+                                hp = 0;
+                                updateGrassHUD();
+                                endGrassGame(false);
+                                return;
+                            }
+                        }
+                    }
+                }
+            }
+
+            function grassAnimate(ts) {
+                if (!grassLastTs) grassLastTs = ts;
+                const deltaSec = Math.min(0.05, (ts - grassLastTs) / 1000);
+                grassLastTs = ts;
+
+                if (grassActive) {
+                    updateGrass(deltaSec);
+                }
+
+                drawGrassScene();
+                grassAnimationId = requestAnimationFrame(grassAnimate);
+            }
+
+            function startGrassAnimation() {
+                if (!grassAnimationId) {
+                    grassLastTs = 0;
+                    grassAnimationId = requestAnimationFrame(grassAnimate);
+                }
+            }
+            function stopGrassAnimation() {
+                if (grassAnimationId) {
+                    cancelAnimationFrame(grassAnimationId);
+                    grassAnimationId = null;
+                }
+            }
+
+            function endGrassGame(survived) {
+                if (!grassActive && !survived) return;
+                grassActive = false;
+                startGrassBtn.disabled = false;
+                if (grassInterval) clearInterval(grassInterval);
+                if (enemySpawnTimer) clearInterval(enemySpawnTimer);
+                grassInterval = null; enemySpawnTimer = null;
+
+                let evalTitle = '', quote = '', finalScore = 0;
+
+                if (survived && hp > 0) {
+                    // 坚持到最后，根据剩余体力和时间给评价
+                    finalScore = hp * 2 + Math.floor(grassTimeLeft / 5);
+                    if (hp >= 5) {
+                        evalTitle = '钢铁红军 ★★★★★';
+                        quote = '“更喜岷山千里雪，三军过后尽开颜。” 你毫发无伤走过草地！';
+                    } else if (hp >= 3) {
+                        evalTitle = '顽强战士 ★★★★';
+                        quote = '“五岭逶迤腾细浪，乌蒙磅礴走泥丸。” 你顽强地走出了草地！';
+                    } else if (hp >= 1) {
+                        evalTitle = '不屈行者 ★★★';
+                        quote = '“金沙水拍云崖暖，大渡桥横铁索寒。” 你坚持到了最后！';
+                    } else {
+                        evalTitle = '悲壮英雄 ★★';
+                        quote = '“红军不怕远征难，万水千山只等闲。” 你倒在了草地上，但精神永存！';
+                    }
+                } else {
+                    // 体力耗尽
+                    finalScore = Math.max(0, (5 - hp) * 0) + 0; // 0分
+                    evalTitle = '英勇牺牲 ★';
+                    quote = '“为有牺牲多壮志，敢教日月换新天。” 你为长征献出了生命，精神不朽！';
+                }
+
+                // 确保分数显示有意义
+                if (survived && hp > 0) {
+                    finalScore = hp * 3;
+                } else {
+                    finalScore = 0;
+                }
+
+                showResultModal(finalScore, evalTitle, quote);
+            }
+
+            // 按键控制
+            function handleKeyDown(e) {
+                if (!grassActive) return;
+                if (e.code === 'ArrowLeft' || e.code === 'KeyA') {
+                    keys['ArrowLeft'] = true;
+                    e.preventDefault();
+                }
+                if (e.code === 'ArrowRight' || e.code === 'KeyD') {
+                    keys['ArrowRight'] = true;
+                    e.preventDefault();
+                }
+                if (e.code === 'Space') {
+                    e.preventDefault();
+                    shootBullet();
+                }
+            }
+            function handleKeyUp(e) {
+                if (e.code === 'ArrowLeft' || e.code === 'KeyA') keys['ArrowLeft'] = false;
+                if (e.code === 'ArrowRight' || e.code === 'KeyD') keys['ArrowRight'] = false;
+            }
+            window.addEventListener('keydown', handleKeyDown);
+            window.addEventListener('keyup', handleKeyUp);
+
+            // 按钮控制
+            moveLeftBtn.addEventListener('mousedown', () => { moveDirection = -1; });
+            moveLeftBtn.addEventListener('mouseup', () => { moveDirection = 0; });
+            moveLeftBtn.addEventListener('mouseleave', () => { moveDirection = 0; });
+            moveLeftBtn.addEventListener('touchstart', (e) => { e.preventDefault(); moveDirection = -1; });
+            moveLeftBtn.addEventListener('touchend', (e) => { e.preventDefault(); moveDirection = 0; });
+
+            moveRightBtn.addEventListener('mousedown', () => { moveDirection = 1; });
+            moveRightBtn.addEventListener('mouseup', () => { moveDirection = 0; });
+            moveRightBtn.addEventListener('mouseleave', () => { moveDirection = 0; });
+            moveRightBtn.addEventListener('touchstart', (e) => { e.preventDefault(); moveDirection = 1; });
+            moveRightBtn.addEventListener('touchend', (e) => { e.preventDefault(); moveDirection = 0; });
+
+            attackBtn.addEventListener('click', shootBullet);
+            startGrassBtn.addEventListener('click', startGrassGame);
+            resetGrassBtn.addEventListener('click', resetGrassGame);
+
+            // ==================== 弹窗逻辑 ====================
+            const modalOverlay = document.getElementById('modalOverlay');
+            const posterScore = document.getElementById('posterScore');
+            const posterEval = document.getElementById('posterEval');
+            const posterQuote = document.getElementById('posterQuote');
+            const questionText = document.getElementById('questionText');
+            const optionsContainer = document.getElementById('optionsContainer');
+            const feedbackText = document.getElementById('feedbackText');
+            const modalCloseBtn = document.getElementById('modalCloseBtn');
+            const congratsArea = document.getElementById('congratsArea');
+            const questionSection = document.getElementById('questionSection');
+
+            let hasAnswered = false;
+
+            function showResultModal(score, evalTitle, quote) {
                 posterScore.textContent = score;
                 posterEval.textContent = evalTitle;
                 posterQuote.textContent = quote;
@@ -834,6 +1481,7 @@
                 questionSection.style.display = 'block';
                 modalCloseBtn.textContent = '下一步';
                 modalCloseBtn.disabled = false;
+                modalCloseBtn.onclick = null; // 清除旧事件
 
                 if (!questionLoaded) {
                     questionText.textContent = '题库加载中，请稍候...';
@@ -842,101 +1490,82 @@
                     questionText.textContent = '暂无题目，可点击下一步跳过。';
                     optionsContainer.innerHTML = '';
                 } else {
-                    currentQuestionIndex = Math.floor(Math.random() * questions.length);
-                    const q = questions[currentQuestionIndex];
-                    
+                    const idx = Math.floor(Math.random() * questions.length);
+                    const q = questions[idx];
                     let typeLabel = '';
                     if (q.type === 'poem_fill') typeLabel = '📜 诗句填空：';
                     else if (q.type === 'poem_match') typeLabel = '📖 诗句选择：';
                     else if (q.type === 'history') typeLabel = '🚩 长征常识：';
-                    
                     questionText.textContent = typeLabel + q.question;
 
                     optionsContainer.innerHTML = '';
-                    q.options.forEach((opt, idx) => {
+                    q.options.forEach((opt, i) => {
                         const btn = document.createElement('button');
                         btn.classList.add('option-btn');
-                        btn.textContent = `${String.fromCharCode(65 + idx)}. ${opt}`;
-                        btn.dataset.index = idx;
-                        btn.addEventListener('click', () => handleAnswer(idx, q, btn));
+                        btn.textContent = `${String.fromCharCode(65 + i)}. ${opt}`;
+                        btn.addEventListener('click', () => {
+                            if (hasAnswered) return;
+                            hasAnswered = true;
+                            const allBtns = optionsContainer.querySelectorAll('.option-btn');
+                            allBtns.forEach(b => b.disabled = true);
+                            if (i === q.correct) {
+                                btn.classList.add('correct');
+                                feedbackText.textContent = '✅ 回答正确！' + q.explanation;
+                            } else {
+                                btn.classList.add('wrong');
+                                allBtns[q.correct].classList.add('correct');
+                                feedbackText.textContent = '❌ 回答错误。正确答案是：' + q.options[q.correct] + '。' + q.explanation;
+                            }
+                        });
                         optionsContainer.appendChild(btn);
                     });
                 }
 
                 modalOverlay.classList.add('active');
-                messageBox.textContent = '点击红星收集完毕，查看你的长征勋章并回答问题！';
             }
 
-            function handleAnswer(selectedIdx, q, clickedBtn) {
-                if (hasAnswered) return;
-                hasAnswered = true;
-                const allBtns = optionsContainer.querySelectorAll('.option-btn');
-                const isCorrect = selectedIdx === q.correct;
-                allBtns.forEach(btn => btn.disabled = true);
-
-                if (isCorrect) {
-                    clickedBtn.classList.add('correct');
-                    feedbackText.textContent = '✅ 回答正确！' + q.explanation;
+            // 弹窗关闭按钮（下一步/完成）
+            modalCloseBtn.addEventListener('click', function() {
+                if (questionSection.style.display !== 'none') {
+                    // 显示恭喜
+                    questionSection.style.display = 'none';
+                    congratsArea.classList.add('show');
+                    modalCloseBtn.textContent = '完成';
+                    // 修改点击行为为关闭
+                    modalCloseBtn.onclick = function() {
+                        modalOverlay.classList.remove('active');
+                        modalCloseBtn.onclick = null;
+                        // 刷新当前游戏状态
+                        if (starGameView.classList.contains('active')) resetStarGame();
+                        if (grassGameView.classList.contains('active')) resetGrassGame();
+                        startStarAnimation();
+                        startGrassAnimation();
+                    };
                 } else {
-                    clickedBtn.classList.add('wrong');
-                    allBtns[q.correct].classList.add('correct');
-                    feedbackText.textContent = '❌ 回答错误。正确答案是：' + q.options[q.correct] + '。' + q.explanation;
-                }
-
-                modalCloseBtn.textContent = '下一步';
-                modalCloseBtn.disabled = false;
-            }
-
-            function closeModal() {
-                questionSection.style.display = 'none';
-                congratsArea.classList.add('show');
-                modalCloseBtn.textContent = '完成';
-                modalCloseBtn.onclick = function() {
+                    // 直接关闭
                     modalOverlay.classList.remove('active');
-                    messageBox.textContent = '长征精神永存！点击「重新出发」再来一次。';
-                    resetGameData();
-                    startAnimationLoop();
-                    modalCloseBtn.onclick = null;
-                    modalCloseBtn.removeEventListener('click', closeModal);
-                    modalCloseBtn.addEventListener('click', closeModal);
-                };
-            }
+                    if (starGameView.classList.contains('active')) resetStarGame();
+                    if (grassGameView.classList.contains('active')) resetGrassGame();
+                }
+            });
 
-            function resetAndStop() {
-                if (modalOverlay.classList.contains('active')) modalOverlay.classList.remove('active');
-                resetGameData();
-                startAnimationLoop();
-                modalCloseBtn.onclick = null;
-                modalCloseBtn.removeEventListener('click', closeModal);
-                modalCloseBtn.addEventListener('click', closeModal);
-                modalCloseBtn.textContent = '下一步';
-                modalCloseBtn.disabled = false;
-            }
-
+            // 初始化：加载题库并显示首页
             async function init() {
                 await loadQuestions();
-                resetGameData();
-                drawBackground();
-                drawStars();
-                startAnimationLoop();
-                canvas.addEventListener('click', handleCanvasClick);
-                startBtn.addEventListener('click', startGame);
-                resetBtn.addEventListener('click', resetAndStop);
-                modalCloseBtn.addEventListener('click', closeModal);
-                window.addEventListener('keydown', (e) => {
-                    if (e.code === 'Space' && !gameActive && !startBtn.disabled && !modalOverlay.classList.contains('active')) {
-                        e.preventDefault();
-                        startGame();
-                    }
-                });
+                showHome();
+                // 启动两个游戏的动画循环（虽然隐藏但会绘制背景，避免切换时空白）
+                startStarAnimation();
+                startGrassAnimation();
             }
-
             init();
 
             window.addEventListener('beforeunload', () => {
-                if (gameInterval) clearInterval(gameInterval);
-                if (starTimer) clearInterval(starTimer);
-                if (animationFrame) cancelAnimationFrame(animationFrame);
+                if (starGameInterval) clearInterval(starGameInterval);
+                if (starSpawnTimer) clearInterval(starSpawnTimer);
+                if (starAnimationId) cancelAnimationFrame(starAnimationId);
+                if (grassInterval) clearInterval(grassInterval);
+                if (enemySpawnTimer) clearInterval(enemySpawnTimer);
+                if (grassAnimationId) cancelAnimationFrame(grassAnimationId);
             });
         })();
     </script>
